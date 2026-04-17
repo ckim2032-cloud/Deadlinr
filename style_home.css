@@ -1,0 +1,14 @@
+body {
+  background: white;
+  font-family: Anivers;
+}
+
+h1 {
+  color: black;
+  text-align: center;
+}
+
+p {
+  color: darkblue;
+  font-size: 18px;
+}
