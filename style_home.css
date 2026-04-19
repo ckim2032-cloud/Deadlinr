@@ -12,3 +12,10 @@ p {
   color: darkblue;
   font-size: 18px;
 }
+
+.title {
+  position: absolute;
+  top: 10;
+  left: 50%;
+  transform: translateX(-50%);
+}
