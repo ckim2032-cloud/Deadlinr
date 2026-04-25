@@ -40,7 +40,8 @@
     </head>
 
   <body>
-    <div class="sidebar">
+      <div class="main-page">
+        <h2 class="title">id="welcomeMessage"></h2>
         <strong>Your subjects:</strong>
         <ul>
             <li>Test</li>
@@ -51,14 +52,12 @@
       <div id="modal" class="modal">
         <div class="modal-content">
           <span onclick="closeSubjectAdder()" class="close">&times;</span>
-          <h2>What is the subject you would ike to add? </h2>
-          <p>This is your popup window.</p>
+          <h2>What subject would you ike to add? </h2>
+          <input type="text" id="subject" required>
+          <button onclick="storeSubject()">Add subject</button>
         </div>
       </div>
        
     </div>
 
-    <div class="main">
-        <h2 class="title">id="welcomeMessage"></h2>
-    </div>
 </body>
