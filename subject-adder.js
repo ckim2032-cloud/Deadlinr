@@ -8,7 +8,7 @@ function closeSubjectAdder() {
 }
 </script>
 
-function addSubject() {
+function storeSubject() {
   let subject = document.getElementById("subject").value;
   console.log(subject);
 }
