@@ -3,21 +3,21 @@ const hour = new Date().getHours();
 let message;
 
 const morning = [
-  "Good morning. Ready to start?",
-  "Let's get ahead of the day.",
+  "Good morning. Ready to start?🌅",
+  "Let's get ahead of the day.🕗",
   "Good day to catch up."
 ];
 
 const afternoon = [
   "Let's keep the momentum going.",
-  "Time to finish some work.",
-  "Keep going. Keep growing."
+  "Time to finish some work.💼",
+  "Keep going. Keep growing.🌱"
 ];
 
 const evening = [
-  "Last push for the day.",
+  "Last push for the day.🌟",
   "Almost there.",
-  "Let's wrap things up."
+  "Let's wrap things up.🌌"
 ];
 
 let messages;
