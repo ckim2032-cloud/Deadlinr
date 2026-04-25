@@ -7,3 +7,8 @@ function closeSubjectAdder() {
   document.getElementById("modal").style.display = "none";
 }
 </script>
+
+function addSubject() {
+  let subject = document.getElementById("subject").value;
+  console.log(subject);
+}
