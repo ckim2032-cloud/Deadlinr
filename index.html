@@ -1,4 +1,4 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <style>
       .sidebar {
@@ -10,6 +10,28 @@
       #plus {
             color: green;
       }
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+      }
+      
+      .modal-content {
+        background: white;
+        margin: 15% auto;
+        padding: 20px;
+        width: 300px;
+        border-radius: 10px;
+      }
+      
+      .close {
+        float: right;
+        cursor: pointer;
+      }
 </style>
 <head>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -18,7 +40,6 @@
     </head>
 
   <body>
-  <div class="layout">
     <div class="sidebar">
         <strong>Your subjects:</strong>
         <ul>
@@ -27,18 +48,17 @@
         </ul>
         <button onclick="openSubjectAdder()"><span id="plus">+</span>Add subject</button>
 
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <span onclick="closeSubjectAdder()" class="close">&times;</span>
-    <h2>Hello 👋</h2>
-    <p>This is your popup window.</p>
-  </div>
-</div>
+      <div id="modal" class="modal">
+        <div class="modal-content">
+          <span onclick="closeSubjectAdder()" class="close">&times;</span>
+          <h2>What is the subject you would ike to add? </h2>
+          <p>This is your popup window.</p>
+        </div>
+      </div>
        
     </div>
 
     <div class="main">
         <h2 class="title">id="welcomeMessage"></h2>
     </div>
-</div>
 </body>
