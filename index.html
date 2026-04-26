@@ -10,7 +10,7 @@
       #plus {
             color: green;
       }
-      .modal {
+      .subject-modal {
         display: none;
         position: fixed;
         top: 0;
@@ -20,7 +20,7 @@
         background: rgba(0,0,0,0.5);
       }
       
-      .modal-content {
+      .subject-modal-content {
         background: white;
         margin: 15% auto;
         padding: 20px;
@@ -49,8 +49,8 @@
         </ul>
         <button onclick="openSubjectAdder()"><span id="plus">+</span>Add subject</button>
 
-      <div id="modal" class="modal">
-        <div class="modal-content">
+      <div id="modal" class="subject-modal">
+        <div class="subject-modal-content">
           <span onclick="closeSubjectAdder()" class="close">&times;</span>
           <h2>What subject would you ike to add? </h2>
           <input type="text" id="subject" required>
