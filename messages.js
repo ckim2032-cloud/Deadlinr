@@ -1,4 +1,6 @@
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+  
 const hour = new Date().getHours();
 let message;
 
@@ -29,5 +31,5 @@ else messages = evening;
 const random = Math.floor(Math.random() * messages.length);
 
 document.getElementById("welcomeMessage").textContent = messages[random];
-
+});
 </script>
