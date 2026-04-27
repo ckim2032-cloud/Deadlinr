@@ -7,12 +7,6 @@
       .main-page {
             background: white;
       }
-      #plus {
-            color: #3bda3b;
-            background-color: #a5f2a5;
-            float: right;
-            cursor: pointer;
-      }
       .subject-modal {
             display: none;
             position: fixed;
@@ -38,8 +32,14 @@
             cursor: pointer;
       }
       #subject-button {
-            background-color: gray;
+            background-color: #a5f2a5;
             width: 10%;
+      }
+      #subject-button-text {
+            color: #3bda3b;
+            float: right;
+            cursor: pointer;
+            border-radius: 10px;
       }
 </style>
 <head>
@@ -50,7 +50,7 @@
       <div class="main-page">
         <h2><strong>id="welcomeMessage"</strong></h2>
        <div style="text-align: right">
-            <button onclick="openSubjectAdder()" id="subject-button"><span id="plus">+</span>Add subject</button>
+            <button onclick="openSubjectAdder()" id="subject-button"><span id="subject-button-text">Add subject +</span></button>
        </div>
       <div id="modal" class="subject-modal">
         <div class="subject-modal-content">
