@@ -43,6 +43,10 @@
             color: #3bbf38;
             cursor: pointer;
       }
+      #welcomeMessage {
+            text-align: center;
+            margin-top: 30px;
+      }
 </style>
 <head>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -50,7 +54,7 @@
 
   <body>
       <div class="main-page">
-        <h2 id="welcomeMessage"></h2>
+        <h1 id="welcomeMessage"></h1>
        <div style="text-align: right">
             <button onclick="openSubjectAdder()" id="subject-button"><span id="subject-button-text">Add subject +</span></button>
        </div>
@@ -72,21 +76,21 @@
       let message;
 
       const morning = [
-        "Good morning. Ready to start?🌅",
-        "Let's get ahead of the day.🕗",
+        "Good morning. Ready to start? 🌅",
+        "Let's get ahead of the day. 🕗",
         "Good day to catch up."
       ];
 
       const afternoon = [
         "Let's keep the momentum going.",
-        "Time to finish some work.💼",
-        "Keep going. Keep growing.🌱"
+        "Time to finish some work. 💼",
+        "Keep going. Keep growing. 🌱"
       ];
 
       const evening = [
-        "Last push for the day.🌟",
+        "Last push for the day. 🌟",
         "Almost there.",
-        "Let's wrap things up.🌌"
+        "Let's wrap things up. 🌌"
       ];
 
       let messages;
@@ -98,6 +102,7 @@
       const random = Math.floor(Math.random() * messages.length);
 
       document.getElementById("welcomeMessage").textContent = messages[random];
+      document.getElementById("welcomeMessage").opacity = "1";
     });
   </script>
 </body>
