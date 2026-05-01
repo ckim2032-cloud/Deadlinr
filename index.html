@@ -20,32 +20,34 @@
       <button id="add-row-btn">Add row +</button>
     </div>
 
-    <table class="deadlinr-table" id="assignment-table">
-      <thead>
-        <tr>
-          <th>Assignment</th>
-          <th>Class</th>
-          <th>Status</th>
-          <th>Due Date</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><input class="assignment-input" type="text" placeholder="Assignment"></td>
-          <td><select class="class-select"></select></td>
-          <td>
-            <select class="status-select status-tag">
-              <option value="todo">To do</option>
-              <option value="in-progress">In progress</option>
-              <option value="done">Done</option>
-            </select>
-          </td>
-          <td><input class="due-date-input" type="date"></td>
-          <td><button class="delete-row-btn">Delete</button></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-wrapper">
+      <table class="deadlinr-table" id="assignment-table">
+        <thead>
+          <tr>
+            <th>Assignment</th>
+            <th>Class</th>
+            <th>Status</th>
+            <th>Due Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input class="assignment-input" type="text" placeholder="Assignment"></td>
+            <td><select class="class-select"></select></td>
+            <td>
+              <select class="status-select status-tag">
+                <option value="todo">To do</option>
+                <option value="in-progress">In progress</option>
+                <option value="done">Done</option>
+              </select>
+            </td>
+            <td><input class="due-date-input" type="date"></td>
+            <td><button class="delete-row-btn">Delete</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
   <script src="script.js"></script>
 </body>
