@@ -1,136 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-<style>
-      body {
-            font-family: Oswald, sans-serif;
-      }
-      .main-page {
-            background: white;
-            z-index: 1;
-      }
-      .subject-modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 50%;
-            height: 50%;
-            background: #ffffff;
-            border-color: #a5a5a5;
-            border-radius: 10px;
-            z-index: 3;
-      }
-      
-      .subject-modal-content {
-            background: white;
-            margin: 15% auto;
-            padding: 20px;
-            width: 300px;
-            border-radius: 10px;
-            z-index: 4;
-      }
-      
-      .close {
-            color: #dc3737;
-            background-color: #ea7a7a;
-            float: right;
-            cursor: pointer;
-            z-index: 5;
-            margin-right: 45%;
-      }
-      #subject-button {
-            background-color: #a5f2a5;
-            width: 10%;
-            float: right;
-            cursor: pointer;
-            border-radius: 50px;
-            border-color: #a5f2a5;
-      }
-      #subject-button-text {
-            color: #3bbf38;
-            cursor: pointer;
-      }
-      #welcomeMessage {
-            text-align: center;
-            margin-top: 30px;
-            opacity: 0;
-            transition: 0;
-      }
-      #sidebar {
-            width: 20%;
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            background-color: #e9e9e9;
-            border: 5px absolute #c2c2c2;
-      }
-      #logo {
-            width: 150px;
-            z-index: 2;
-      }
-</style>
-
 <head>
-      <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    </head>
-
-  <body>
-      <div class="main-page">
-            <h1 id="welcomeMessage"></h1>
-       <div style="text-align: right">
-            <button onclick="openSubjectAdder()" id="subject-button"><span id="subject-button-text">Add subject +</span></button>
-       </div>
-      <div id="sidebar">
-            <img id="logo" src="images/logo.png" alt="Deadlinr Logo">
-      </div>
-      <div id="modal" class="subject-modal">
-        <div class="subject-modal-content">
-          <span onclick="closeSubjectAdder()" class="close">&times;</span>
-          <h2>What subject would you ike to add? </h2>
-          <input type="text" id="subject" required>
-          <button onclick="storeSubject()">Add subject</button>
-        </div>
-      </div>
-       
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deadlinr</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="sidebar">
+    <img id="logo" src="images/logo.png" alt="Deadlinr Logo">
+  </div>
+  
+  <div class="main-page">
+    <h1 id="welcomeMessage"></h1>
+    <div class="controls">
+      <button id="add-class-btn">Add class +</button>
+      <button onclick="openSubjectAdder()" id="subject-button">
+        <span id="subject-button-text">Add subject +</span>
+      </button>
     </div>
-      
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
 
-      const hour = new Date().getHours();
-      let message;
+    <table class="deadlinr-table">
+      <thead>
+        <tr>
+          <th>Assignment</th>
+          <th>Class</th>
+          <th>Status</th>
+          <th>Due Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input class="assignment-input" type="text" value="Math homework"></td>
+          <td><select class="class-select"></select></td>
+          <td>
+            <select class="status-select status-tag">
+              <option value="todo">To do</option>
+              <option value="in-progress">In progress</option>
+              <option value="done">Done</option>
+            </select>
+          </td>
+          <td><input class="due-date-input" type="date"></td>
+          <td><button class="edit-row-btn">Edit</button></td>
+        </tr>
+      </tbody>
+    </table>
 
-      const morning = [
-        "Good morning. Ready to start? 🌅",
-        "Let's get ahead of the day. 🕗",
-        "Good day to catch up."
-      ];
-
-      const afternoon = [
-        "Let's keep the momentum going.",
-        "Time to finish some work. 💼",
-        "Keep going. Keep growing. 🌱"
-      ];
-
-      const evening = [
-        "Last push for the day. 🌟",
-        "Almost there.",
-        "Let's wrap things up. 🌌"
-      ];
-
-      let messages;
-
-      if (hour < 12) messages = morning;
-      else if (hour < 17) messages = afternoon;
-      else messages = evening;
-
-      const random = Math.floor(Math.random() * messages.length);
-
-      document.getElementById("welcomeMessage").textContent = messages[random];
-      document.getElementById("welcomeMessage").style.opacity = "1";
-    });
-  </script>
+    <div id="modal" class="subject-modal">
+      <div class="subject-modal-content">
+        <span onclick="closeSubjectAdder()" class="close">&times;</span>
+        <h2>What subject would you like to add?</h2>
+        <input type="text" id="subject" required>
+        <button onclick="storeSubject()">Add subject</button>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
