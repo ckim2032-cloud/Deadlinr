@@ -16,12 +16,11 @@
     <h1 id="welcomeMessage"></h1>
     <div class="controls">
       <button id="add-class-btn">Add class +</button>
-      <button onclick="openSubjectAdder()" id="subject-button">
-        <span id="subject-button-text">Add subject +</span>
-      </button>
+      <button id="delete-class-btn">Delete class -</button>
+      <button id="add-row-btn">Add row +</button>
     </div>
 
-    <table class="deadlinr-table">
+    <table class="deadlinr-table" id="assignment-table">
       <thead>
         <tr>
           <th>Assignment</th>
@@ -33,7 +32,7 @@
       </thead>
       <tbody>
         <tr>
-          <td><input class="assignment-input" type="text" value="Math homework"></td>
+          <td><input class="assignment-input" type="text" placeholder="Assignment"></td>
           <td><select class="class-select"></select></td>
           <td>
             <select class="status-select status-tag">
@@ -43,19 +42,10 @@
             </select>
           </td>
           <td><input class="due-date-input" type="date"></td>
-          <td><button class="edit-row-btn">Edit</button></td>
+          <td><button class="delete-row-btn">Delete</button></td>
         </tr>
       </tbody>
     </table>
-
-    <div id="modal" class="subject-modal">
-      <div class="subject-modal-content">
-        <span onclick="closeSubjectAdder()" class="close">&times;</span>
-        <h2>What subject would you like to add?</h2>
-        <input type="text" id="subject" required>
-        <button onclick="storeSubject()">Add subject</button>
-      </div>
-    </div>
   </div>
   <script src="script.js"></script>
 </body>
