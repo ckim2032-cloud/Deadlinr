@@ -17,7 +17,7 @@ body {
   background-color: rgba(233, 233, 233, 0.9); border-right: 1px solid #c2c2c2; z-index: 2; 
 }
 
-#logo { width: 80px; margin: 10px; }
+#logo { width: 120px; margin: 10px; }
 
 .main-page { margin-left: 10%; padding: 20px; z-index: 1; }
 
