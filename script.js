@@ -3,24 +3,47 @@ const statusColors = { todo: "status-todo", "in-progress": "status-progress", do
 
 document.addEventListener("DOMContentLoaded", () => {
   const hour = new Date().getHours();
-  const morning = ["Good morning. Ready to start? 🌅", "Let's get ahead of the day. 🕗", "Good day to catch up."];
-  const afternoon = ["Let's keep the momentum going.", "Time to finish some work. 💼", "Keep going. Keep growing. 🌱"];
-  const evening = ["Last push for the day. 🌟", "Almost there.", "Let's wrap things up. 🌌"];
-
-  const choices = hour < 12 ? morning : hour < 17 ? afternoon : evening;
+  const messages = hour < 12 ? ["Good morning. Ready to start? 🌅"] : hour < 17 ? ["Let's keep the momentum going."] : ["Last push for the day. 🌟"];
   const welcome = document.getElementById("welcomeMessage");
-  if (welcome) {
-    welcome.textContent = choices[Math.floor(Math.random() * choices.length)];
-    welcome.style.opacity = "1";
-  }
+  if (welcome) { welcome.textContent = messages[0]; welcome.style.opacity = "1"; }
 
-  const addClassButton = document.getElementById("add-class-btn");
-  if (addClassButton) addClassButton.addEventListener("click", addClassFromPrompt);
-
+  document.getElementById("add-class-btn").addEventListener("click", addClassFromPrompt);
+  document.getElementById("delete-class-btn").addEventListener("click", deleteClassFromPrompt);
+  document.getElementById("add-row-btn").addEventListener("click", addRow);
+  
   loadSavedClasses();
-  setupRows();
-  setupClassDropdowns();
+  setupTableEventListeners();
 });
+
+function addRow() {
+  const tbody = document.querySelector("#assignment-table tbody");
+  const newRow = tbody.insertRow();
+  newRow.innerHTML = `
+    <td><input class="assignment-input" type="text" placeholder="Assignment"></td>
+    <td><select class="class-select">${document.querySelector(".class-select").innerHTML}</select></td>
+    <td>
+      <select class="status-select status-tag">
+        <option value="todo">To do</option>
+        <option value="in-progress">In progress</option>
+        <option value="done">Done</option>
+      </select>
+    </td>
+    <td><input class="due-date-input" type="date"></td>
+    <td><button class="delete-row-btn">Delete</button></td>
+  `;
+  setupTableEventListeners();
+}
+
+function deleteClassFromPrompt() {
+  const name = prompt("Enter the exact name of the class to delete:");
+  if (!name) return;
+  const value = name.trim().replace(/\s+/g, "-").toLowerCase();
+  document.querySelectorAll(".class-select").forEach(select => {
+    const opt = select.querySelector(`option[value="${value}"]`);
+    if (opt) opt.remove();
+  });
+  saveClassList();
+}
 
 function addClassFromPrompt() {
   const name = prompt("Enter class name");
@@ -32,8 +55,7 @@ function addClassFromPrompt() {
 }
 
 function appendClassToAllDropdowns(value, display) {
-  const selects = document.querySelectorAll(".class-select");
-  selects.forEach((select) => {
+  document.querySelectorAll(".class-select").forEach((select) => {
     if (!select.querySelector(`option[value="${value}"]`)) {
       const option = document.createElement("option");
       option.value = value;
@@ -46,41 +68,18 @@ function appendClassToAllDropdowns(value, display) {
 function loadSavedClasses() {
   const saved = localStorage.getItem(classSaveKey);
   const list = saved ? JSON.parse(saved) : [];
-  list.forEach((name) => appendClassToAllDropdowns(name.replace(/\s+/g, "-").toLowerCase(), name));
+  list.forEach(name => appendClassToAllDropdowns(name.replace(/\s+/g, "-").toLowerCase(), name));
 }
 
 function saveClassList() {
   const firstSelect = document.querySelector(".class-select");
   if (!firstSelect) return;
-  const names = Array.from(firstSelect.querySelectorAll("option")).map((opt) => opt.textContent);
+  const names = Array.from(firstSelect.querySelectorAll("option")).map(opt => opt.textContent);
   localStorage.setItem(classSaveKey, JSON.stringify(names));
 }
 
-function setupClassDropdowns() {
-  document.querySelectorAll(".class-select").forEach((select) => {
-    select.addEventListener("change", () => select.closest("tr").dataset.className = select.value);
+function setupTableEventListeners() {
+  document.querySelectorAll(".delete-row-btn").forEach(btn => {
+    btn.onclick = (e) => e.target.closest("tr").remove();
   });
-}
-
-function setupRows() {
-  document.querySelectorAll(".deadlinr-table tbody tr").forEach((row) => {
-    const statusSelect = row.querySelector(".status-select");
-    if (statusSelect) {
-      statusSelect.addEventListener("change", () => updateRowStatus(row, statusSelect.value));
-      updateRowStatus(row, statusSelect.value);
-    }
-  });
-}
-
-function updateRowStatus(row, value) {
-  row.classList.remove("status-todo", "status-progress", "status-done");
-  row.classList.add(statusColors[value] || "status-todo");
-}
-
-function openSubjectAdder() { document.getElementById("modal").style.display = "block"; }
-function closeSubjectAdder() { document.getElementById("modal").style.display = "none"; }
-function storeSubject() {
-  console.log(document.getElementById("subject").value);
-  document.getElementById("subject").value = "";
-  closeSubjectAdder();
 }
