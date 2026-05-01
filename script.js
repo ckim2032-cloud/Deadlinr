@@ -1,11 +1,12 @@
 const classSaveKey = "deadlinr_class_list";
-const statusColors = { todo: "status-todo", "in-progress": "status-progress", done: "status-done" };
 
 document.addEventListener("DOMContentLoaded", () => {
-  const hour = new Date().getHours();
-  const messages = hour < 12 ? ["Good morning. Ready to start? 🌅"] : hour < 17 ? ["Let's keep the momentum going."] : ["Last push for the day. 🌟"];
   const welcome = document.getElementById("welcomeMessage");
-  if (welcome) { welcome.textContent = messages[0]; welcome.style.opacity = "1"; }
+  const messages = ["Let's get ahead of the day. 🕗", "Time to finish some work. 💼", "Last push for the day. 🌟"];
+  if (welcome) {
+    welcome.textContent = messages[Math.floor(Math.random() * messages.length)];
+    welcome.style.opacity = "1";
+  }
 
   document.getElementById("add-class-btn").addEventListener("click", addClassFromPrompt);
   document.getElementById("delete-class-btn").addEventListener("click", deleteClassFromPrompt);
@@ -18,9 +19,12 @@ document.addEventListener("DOMContentLoaded", () => {
 function addRow() {
   const tbody = document.querySelector("#assignment-table tbody");
   const newRow = tbody.insertRow();
+  const firstSelect = document.querySelector(".class-select");
+  const optionsHtml = firstSelect ? firstSelect.innerHTML : "";
+  
   newRow.innerHTML = `
     <td><input class="assignment-input" type="text" placeholder="Assignment"></td>
-    <td><select class="class-select">${document.querySelector(".class-select").innerHTML}</select></td>
+    <td><select class="class-select">${optionsHtml}</select></td>
     <td>
       <select class="status-select status-tag">
         <option value="todo">To do</option>
@@ -38,6 +42,7 @@ function deleteClassFromPrompt() {
   const name = prompt("Enter the exact name of the class to delete:");
   if (!name) return;
   const value = name.trim().replace(/\s+/g, "-").toLowerCase();
+  
   document.querySelectorAll(".class-select").forEach(select => {
     const opt = select.querySelector(`option[value="${value}"]`);
     if (opt) opt.remove();
@@ -50,6 +55,7 @@ function addClassFromPrompt() {
   if (!name || name.trim() === "") return;
   const trimmed = name.trim();
   const value = trimmed.replace(/\s+/g, "-").toLowerCase();
+  
   appendClassToAllDropdowns(value, trimmed);
   saveClassList();
 }
