@@ -2,46 +2,313 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Deadlinr Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deadlinr</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+
+    body { 
+      margin: 0; padding: 0; font-family: 'Oswald', sans-serif; min-height: 100vh; 
+      background: white; 
+    }
+
+    #sidebar { 
+      width: 10%; height: 100vh; position: fixed; left: 0; top: 0; 
+      background-color: rgba(245, 245, 245, 0.9); border-right: 1px solid #ddd; z-index: 2; 
+    }
+
+    #logo { width: 120px; margin: 10px; }
+
+    .main-page { margin-left: 10%; padding: 20px; z-index: 1; }
+
+    #welcomeMessage { text-align: center; color: #333; margin-top: 30px; transition: opacity 0.5s; }
+
+    .controls { text-align: right; margin-bottom: 20px; padding-right: 10%; }
+
+    .table-wrapper { width: 85%; margin: 0 auto; }
+
+    /* Gradient Border and Styling for Table */
+    .deadlinr-table { 
+      width: 100%; border-collapse: separate; border-spacing: 0; 
+      background: #fdfdfd; /* Slightly off-white */
+      border-radius: 15px; overflow: hidden; 
+      position: relative;
+      border: 3px solid transparent;
+      background-image: linear-gradient(#fdfdfd, #fdfdfd), linear-gradient(110deg, #28e6c0 0%, #20d8d2 35%, #1fb0ff 70%, #0086ff 100%);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .deadlinr-table th {
+      background-color: #f8f8f8;
+      color: #444;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      padding: 20px 15px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .deadlinr-table td { 
+      padding: 15px; border-bottom: 1px solid #eee; text-align: left; 
+    }
+
+
+    .deadlinr-table tbody tr {
+      background-color: #fafafa;
+    }
+
+    .assignment-input, .class-select, .status-select, .due-date-input {
+      width: 100%;
+      padding: 12px 15px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      background-color: #f5f5f5;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .assignment-input:focus, .class-select:focus, .status-select:focus, .due-date-input:focus {
+      background-color: #fff;
+      border-color: #20d8d2;
+    }
+
+    #add-class-btn, #add-task-btn, #delete-class-btn { 
+      background: white; 
+      cursor: pointer; 
+      border-radius: 50px; 
+      padding: 12px 25px; 
+      margin-left: 10px;
+      font-family: 'Oswald', sans-serif; 
+      font-weight: 700;
+      position: relative;
+      border: 2px solid transparent;
+      background-image: linear-gradient(white, white), linear-gradient(110deg, #28e6c0 0%, #20d8d2 35%, #1fb0ff 70%, #0086ff 100%);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      transition: transform 0.2s;
+      color: #333;
+    }
+
+    #add-class-btn:hover, #add-row-btn:hover, #delete-class-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(0.95);
+    }
+
+    /* Delete Row Button */
+    .delete-row-btn {
+      background: white;
+      cursor: pointer; 
+      border-radius: 50px; 
+      padding: 8px 18px;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700;
+      border: 2px solid #ffb3b3; 
+      transition: all 0.2s;
+      color: #333;
+    }
+
+    .delete-row-btn:hover {
+      background-color: #fff0f0;
+      border-color: #ff9999;
+      transform: scale(1.05);
+    }
+
+    .status-todo { background: #eeeeee; }
+    .status-progress { background: #e0f2f1; }
+    .status-done { background: #e8f5e9; }
+  </style>
 </head>
 <body>
   <div id="sidebar">
-    <img id="logo" src="images/logo.png" alt="Logo">
-    <nav>
-      <button onclick="showSection('dashboard-section')">Dashboard</button>
-      <button onclick="showSection('tasks-section')">Tasks</button>
-    </nav>
+    <img id="logo" src="images/logo.png" alt="Deadlinr Logo">
   </div>
   
-  <main class="main-page">
-    <header>
-      <h1 id="welcomeMessage"></h1>
-    </header>
-
-    <div id="dashboard-section" class="section">
-      <div class="stats-grid">
-        <div class="glass-card"><h3>Total Tasks</h3><p id="stat-total">0</p></div>
-        <div class="glass-card"><h3>Completed</h3><p id="stat-completed">0</p></div>
-        <div class="glass-card"><h3>In Progress</h3><p id="stat-progress">0</p></div>
-        <div class="glass-card"><h3>Overdue</h3><p id="stat-overdue">0</p></div>
-      </div>
+  <div id="sidebar">
+    
+  </div>
+  
+  <div class="main-page">
+    <h1 id="welcomeMessage"></h1>
+    <div class="controls">
+      <button id="add-class-btn">Add class +</button>
+      <button id="delete-class-btn">Delete class -</button>
+      <button id="add-task-btn">Add task +</button>
     </div>
 
-    <div id="tasks-section" class="section" style="display:none;">
-      <div class="controls">
-        <button id="add-class-btn">Add class +</button>
-        <button id="delete-class-btn">Delete class -</button>
-        <button id="add-task-btn">Add task +</button>
-      </div>
-      <div class="glass-card table-wrapper">
-        <table class="deadlinr-table" id="assignment-table">
-          <thead><tr><th>Assignment</th><th>Class</th><th>Status</th><th>Due</th><th>Actions</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
+    <div class="table-wrapper">
+      <table class="deadlinr-table" id="assignment-table">
+        <thead>
+          <tr>
+            <th>Assignment</th>
+            <th>Class</th>
+            <th>Status</th>
+            <th>Due Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input class="assignment-input" type="text" placeholder="Assignment Name"></td>
+            <td><select class="class-select"></select></td>
+            <td>
+              <select class="status-select status-tag">
+                <option value="todo">To do</option>
+                <option value="in-progress">In progress</option>
+                <option value="done">Done</option>
+              </select>
+            </td>
+            <td><input class="due-date-input" type="date"></td>
+            <td><button class="delete-row-btn">Delete</button></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </main>
-  <script src="script.js"></script>
+  </div>
+
+  <script>
+    const classSaveKey = "deadlinr_class_list";
+    const statusColors = { todo: "status-todo", "in-progress": "status-progress", done: "status-done" };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const welcome = document.getElementById("welcomeMessage");
+      
+      const messageData = {
+        morning: [
+          "Good morning. Ready to start? 🌅",
+          "Let's get ahead of the day. 🕗",
+          "Good day to catch up."
+        ],
+        afternoon: [
+          "Let's keep the momentum going.",
+          "Time to finish some work. 💼",
+          "Keep going. Keep growing. 🌱"
+        ],
+        evening: [
+          "Last push for the day. 🌟",
+          "Almost there.",
+          "Let's wrap things up. 🌌"
+        ]
+      };
+
+      let currentIndex = 0;
+
+      function updateWelcome() {
+        const hour = new Date().getHours();
+        let messages;
+
+        if (hour < 12) messages = messageData.morning;
+        else if (hour < 17) messages = messageData.afternoon;
+        else messages = messageData.evening;
+
+        if (welcome) {
+          welcome.textContent = messages[currentIndex % messages.length];
+          welcome.style.opacity = "1";
+        }
+        currentIndex++;
+      }
+
+      updateWelcome();
+      setInterval(updateWelcome, 60000);
+
+      document.getElementById("add-class-btn").addEventListener("click", addClassFromPrompt);
+      document.getElementById("delete-class-btn").addEventListener("click", deleteClassFromPrompt);
+      document.getElementById("add-task-btn").addEventListener("click", addTask);
+      
+      loadSavedClasses();
+      setupTableEventListeners();
+    });
+
+    function addTask() {
+      const tbody = document.querySelector("#assignment-table tbody");
+      const newTask = tbody.insertRow();
+      const firstSelect = document.querySelector(".class-select");
+      const optionsHtml = firstSelect ? firstSelect.innerHTML : "";
+      
+      newTask.innerHTML = `
+        <td><input class="assignment-input" type="text" placeholder="Assignment Name"></td>
+        <td><select class="class-select">${optionsHtml}</select></td>
+        <td>
+          <select class="status-select status-tag">
+            <option value="todo">To do</option>
+            <option value="in-progress">In progress</option>
+            <option value="done">Done</option>
+          </select>
+        </td>
+        <td><input class="due-date-input" type="date"></td>
+        <td><button class="delete-task-btn">Delete</button></td>
+      `;
+      setupTableEventListeners();
+    }
+
+    function deleteClassFromPrompt() {
+      const name = prompt("Enter the exact name of the class to delete:");
+      if (!name) return;
+      const value = name.trim().replace(/\s+/g, "-").toLowerCase();
+      document.querySelectorAll(".class-select").forEach(select => {
+        const opt = select.querySelector(`option[value="${value}"]`);
+        if (opt) opt.remove();
+      });
+      saveClassList();
+    }
+
+    function addClassFromPrompt() {
+      const name = prompt("Enter class name");
+      if (!name || name.trim() === "") return;
+      const trimmed = name.trim();
+      const value = trimmed.replace(/\s+/g, "-").toLowerCase();
+      appendClassToAllDropdowns(value, trimmed);
+      saveClassList();
+    }
+
+    function appendClassToAllDropdowns(value, display) {
+      document.querySelectorAll(".class-select").forEach((select) => {
+        if (!select.querySelector(`option[value="${value}"]`)) {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = display;
+          select.appendChild(option);
+        }
+      });
+    }
+
+    function loadSavedClasses() {
+      const saved = localStorage.getItem(classSaveKey);
+      const list = saved ? JSON.parse(saved) : [];
+      list.forEach(name => appendClassToAllDropdowns(name.replace(/\s+/g, "-").toLowerCase(), name));
+    }
+
+    function saveClassList() {
+      const firstSelect = document.querySelector(".class-select");
+      if (!firstSelect) return;
+      const names = Array.from(firstSelect.querySelectorAll("option")).map(opt => opt.textContent);
+      localStorage.setItem(classSaveKey, JSON.stringify(names));
+    }
+
+    function setupTableEventListeners() {
+      document.querySelectorAll(".delete-task-btn").forEach(btn => {
+        btn.onclick = (e) => e.target.closest("tr").remove();
+      });
+    }
+    function highlightOverdue() {
+  const today = new Date().toISOString().split("T")[0];
+
+  getRows().forEach(row => {
+    const dueDate = row.querySelector(".due-date-input").value;
+    const status = row.querySelector(".status-select").value;
+
+    if (dueDate && dueDate < today && status !== "done") {
+      row.style.backgroundColor = "#ffe5e5";
+    }
+  });
+}
+    highlightOverdue();
+  </script>
 </body>
 </html>
