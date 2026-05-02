@@ -7,43 +7,40 @@
 </head>
 <body>
   <div id="sidebar">
-    <img id="logo" src="images/logo.png" alt="Deadlinr Logo">
-    <nav class="nav-links">
-      <button onclick="showPage('dashboard')">Dashboard</button>
-      <button onclick="showPage('tasks')">Tasks</button>
-      <button onclick="showPage('calendar')">Calendar</button>
+    <img id="logo" src="images/logo.png" alt="Logo">
+    <nav>
+      <button onclick="showSection('dashboard-section')">Dashboard</button>
+      <button onclick="showSection('tasks-section')">Tasks</button>
     </nav>
   </div>
   
-  <main class="main-content">
+  <main class="main-page">
     <header>
-      <h1>Good morning, Student! 🌅</h1>
-      <input type="text" placeholder="Search tasks, projects...">
+      <h1 id="welcomeMessage"></h1>
     </header>
 
-    <div class="stats-grid">
-      <div class="card"><h3>Total Tasks</h3><p>24</p></div>
-      <div class="card"><h3>Completed</h3><p>16</p></div>
-      <div class="card"><h3>In Progress</h3><p>5</p></div>
-      <div class="card"><h3>Overdue</h3><p>3</p></div>
+    <div id="dashboard-section" class="section">
+      <div class="stats-grid">
+        <div class="glass-card"><h3>Total Tasks</h3><p id="stat-total">0</p></div>
+        <div class="glass-card"><h3>Completed</h3><p id="stat-completed">0</p></div>
+        <div class="glass-card"><h3>In Progress</h3><p id="stat-progress">0</p></div>
+        <div class="glass-card"><h3>Overdue</h3><p id="stat-overdue">0</p></div>
+      </div>
     </div>
 
-    <section class="task-section">
-      <h2>Upcoming Deadlines</h2>
-      <table class="deadlinr-table" id="assignment-table">
-        <thead><tr><th>Assignment</th><th>Class</th><th>Status</th><th>Due</th><th>Actions</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><input class="assignment-input" value="Math homework"></td>
-            <td><select class="class-select"></select></td>
-            <td><select class="status-select"><option value="todo">To do</option></select></td>
-            <td><input class="due-date-input" type="date"></td>
-            <td><button class="delete-task-btn">Delete</button></td>
-          </tr>
-        </tbody>
-      </table>
-      <button id="add-task-btn">Add Task +</button>
-    </section>
+    <div id="tasks-section" class="section" style="display:none;">
+      <div class="controls">
+        <button id="add-class-btn">Add class +</button>
+        <button id="delete-class-btn">Delete class -</button>
+        <button id="add-task-btn">Add task +</button>
+      </div>
+      <div class="glass-card table-wrapper">
+        <table class="deadlinr-table" id="assignment-table">
+          <thead><tr><th>Assignment</th><th>Class</th><th>Status</th><th>Due</th><th>Actions</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
   </main>
   <script src="script.js"></script>
 </body>
