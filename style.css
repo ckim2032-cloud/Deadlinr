@@ -1,4 +1,25 @@
 * { box-sizing: border-box; }
+body { margin: 0; padding: 0; font-family: 'Oswald', sans-serif; background: #0a0e14; color: white; }
+
+#sidebar { width: 15%; height: 100vh; position: fixed; left: 0; top: 0; background: #111827; border-right: 1px solid #1f2937; padding: 20px; }
+#logo { width: 120px; display: block; margin-bottom: 40px; }
+.nav-links button { display: block; width: 100%; text-align: left; background: none; color: #9ca3af; border: none; padding: 15px 0; font-size: 1.1rem; cursor: pointer; }
+.nav-links button:hover { color: white; }
+
+.main-page { margin-left: 15%; padding: 40px; }
+#welcomeMessage { text-align: left; font-size: 2rem; margin-bottom: 40px; }
+
+.controls { text-align: right; margin-bottom: 20px; }
+.controls button { background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; }
+
+.table-wrapper { background: #111827; border-radius: 16px; padding: 20px; border: 1px solid #1f2937; }
+.deadlinr-table { width: 100%; border-collapse: collapse; }
+.deadlinr-table th, .deadlinr-table td { padding: 15px; border-bottom: 1px solid #1f2937; text-align: left; }
+
+.assignment-input, .class-select, .status-select, .due-date-input {
+  background: #1f2937; border: 1px solid #374151; color: white; padding: 8px; border-radius: 6px; width: 100%;
+}
+.delete-task-btn { background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }* { box-sizing: border-box; }
 
 body { 
   margin: 0; padding: 0; font-family: 'Oswald', sans-serif; min-height: 100vh; 
