@@ -11,48 +11,120 @@
 
     body { 
       margin: 0; padding: 0; font-family: 'Oswald', sans-serif; min-height: 100vh; 
-      background: linear-gradient(110deg, #28e6c0 0%, #20d8d2 35%, #1fb0ff 70%, #0086ff 100%); 
-      background-size: 400% 400%; animation: backgroundAnimation 14s ease infinite; 
-    }
-
-    @keyframes backgroundAnimation { 
-      0% { background-position: 0% 50%; } 
-      50% { background-position: 100% 50%; } 
-      100% { background-position: 0% 50%; } 
+      background: white; 
     }
 
     #sidebar { 
       width: 10%; height: 100vh; position: fixed; left: 0; top: 0; 
-      background-color: rgba(233, 233, 233, 0.9); border-right: 1px solid #c2c2c2; z-index: 2; 
+      background-color: rgba(245, 245, 245, 0.9); border-right: 1px solid #ddd; z-index: 2; 
     }
 
     #logo { width: 120px; margin: 10px; }
 
     .main-page { margin-left: 10%; padding: 20px; z-index: 1; }
 
-    #welcomeMessage { text-align: center; color: white; margin-top: 30px; transition: opacity 0.5s; }
+    #welcomeMessage { text-align: center; color: #333; margin-top: 30px; transition: opacity 0.5s; }
 
     .controls { text-align: right; margin-bottom: 20px; padding-right: 10%; }
 
-    .table-wrapper { width: 80%; margin: 0 auto; }
+    .table-wrapper { width: 85%; margin: 0 auto; }
 
+    /* Gradient Border and Styling for Table */
     .deadlinr-table { 
-      width: 100%; border-collapse: collapse; background: white; 
-      border-radius: 10px; overflow: hidden; 
+      width: 100%; border-collapse: separate; border-spacing: 0; 
+      background: #fdfdfd; /* Slightly off-white */
+      border-radius: 15px; overflow: hidden; 
+      position: relative;
+      border: 3px solid transparent;
+      background-image: linear-gradient(#fdfdfd, #fdfdfd), linear-gradient(110deg, #28e6c0 0%, #20d8d2 35%, #1fb0ff 70%, #0086ff 100%);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     }
 
-    .deadlinr-table th, .deadlinr-table td { 
-      padding: 25px 15px; border-bottom: 1px solid #eee; text-align: left; 
+    .deadlinr-table th {
+      background-color: #f8f8f8;
+      color: #444;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      padding: 20px 15px;
+      border-bottom: 2px solid #eee;
     }
 
+    .deadlinr-table td { 
+      padding: 15px; border-bottom: 1px solid #eee; text-align: left; 
+    }
+
+    /* Toning the table rows to be "more not white" */
+    .deadlinr-table tbody tr {
+      background-color: #fafafa;
+    }
+
+    /* Bigger Input Boxes with subtle background */
+    .assignment-input, .class-select, .status-select, .due-date-input {
+      width: 100%;
+      padding: 12px 15px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      background-color: #f5f5f5;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .assignment-input:focus, .class-select:focus, .status-select:focus, .due-date-input:focus {
+      background-color: #fff;
+      border-color: #20d8d2;
+    }
+
+    /* Buttons with Gradient Borders - Reinforced styles */
     #add-class-btn, #add-row-btn, #delete-class-btn { 
-      background-color: #a5f2a5; cursor: pointer; border-radius: 50px; 
-      border: 1px solid #a5f2a5; padding: 10px 20px; margin-left: 10px; 
+      background: white; 
+      cursor: pointer; 
+      border-radius: 50px; 
+      padding: 12px 25px; 
+      margin-left: 10px;
+      font-family: 'Oswald', sans-serif; 
+      font-weight: 700;
+      position: relative;
+      border: 2px solid transparent;
+      background-image: linear-gradient(white, white), linear-gradient(110deg, #28e6c0 0%, #20d8d2 35%, #1fb0ff 70%, #0086ff 100%);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      transition: transform 0.2s;
+      color: #333;
     }
 
-    .status-todo { background: #f8f8f8; }
-    .status-progress { background: #e8f5e8; }
-    .status-done { background: #d4f0d4; }
+    #add-class-btn:hover, #add-row-btn:hover, #delete-class-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(0.95);
+    }
+
+    /* Delete Row Button */
+    .delete-row-btn {
+      background: white;
+      cursor: pointer; 
+      border-radius: 50px; 
+      padding: 8px 18px;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700;
+      border: 2px solid #ffb3b3; 
+      transition: all 0.2s;
+      color: #333;
+    }
+
+    .delete-row-btn:hover {
+      background-color: #fff0f0;
+      border-color: #ff9999;
+      transform: scale(1.05);
+    }
+
+    .status-todo { background: #eeeeee; }
+    .status-progress { background: #e0f2f1; }
+    .status-done { background: #e8f5e9; }
   </style>
 </head>
 <body>
@@ -67,9 +139,9 @@
   <div class="main-page">
     <h1 id="welcomeMessage"></h1>
     <div class="controls">
-      <button id="add-class-btn">Add Class +</button>
-      <button id="delete-class-btn">Delete Class -</button>
-      <button id="add-row-btn">Add Row +</button>
+      <button id="add-class-btn">Add class +</button>
+      <button id="delete-class-btn">Delete class -</button>
+      <button id="add-row-btn">Add row +</button>
     </div>
 
     <div class="table-wrapper">
@@ -85,7 +157,7 @@
         </thead>
         <tbody>
           <tr>
-            <td><input class="assignment-input" type="text" placeholder="Assignment"></td>
+            <td><input class="assignment-input" type="text" placeholder="Assignment Name"></td>
             <td><select class="class-select"></select></td>
             <td>
               <select class="status-select status-tag">
@@ -162,7 +234,7 @@
       const optionsHtml = firstSelect ? firstSelect.innerHTML : "";
       
       newRow.innerHTML = `
-        <td><input class="assignment-input" type="text" placeholder="Assignment"></td>
+        <td><input class="assignment-input" type="text" placeholder="Assignment Name"></td>
         <td><select class="class-select">${optionsHtml}</select></td>
         <td>
           <select class="status-select status-tag">
