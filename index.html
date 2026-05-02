@@ -79,7 +79,7 @@
       border-color: #20d8d2;
     }
 
-    #add-class-btn, #add-row-btn, #delete-class-btn { 
+    #add-class-btn, #add-task-btn, #delete-class-btn { 
       background: white; 
       cursor: pointer; 
       border-radius: 50px; 
@@ -139,7 +139,7 @@
     <div class="controls">
       <button id="add-class-btn">Add class +</button>
       <button id="delete-class-btn">Delete class -</button>
-      <button id="add-row-btn">Add row +</button>
+      <button id="add-task-btn">Add task +</button>
     </div>
 
     <div class="table-wrapper">
@@ -219,19 +219,19 @@
 
       document.getElementById("add-class-btn").addEventListener("click", addClassFromPrompt);
       document.getElementById("delete-class-btn").addEventListener("click", deleteClassFromPrompt);
-      document.getElementById("add-row-btn").addEventListener("click", addRow);
+      document.getElementById("add-task-btn").addEventListener("click", addTask);
       
       loadSavedClasses();
       setupTableEventListeners();
     });
 
-    function addRow() {
+    function addTask() {
       const tbody = document.querySelector("#assignment-table tbody");
-      const newRow = tbody.insertRow();
+      const newTask = tbody.insertTask();
       const firstSelect = document.querySelector(".class-select");
       const optionsHtml = firstSelect ? firstSelect.innerHTML : "";
       
-      newRow.innerHTML = `
+      newTask.innerHTML = `
         <td><input class="assignment-input" type="text" placeholder="Assignment Name"></td>
         <td><select class="class-select">${optionsHtml}</select></td>
         <td>
