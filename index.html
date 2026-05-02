@@ -4,12 +4,162 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Deadlinr</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* PRESERVING YOUR ORIGINAL LAYOUT STYLES */
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      display: flex;
+      background-color: #f8fafc;
+      min-height: 100vh;
+    }
+
+    #sidebar {
+      width: 240px;
+      background-color: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      padding: 20px;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    #logo {
+      max-width: 100%;
+    }
+
+    .main-page {
+      flex: 1;
+      padding: 40px;
+      max-width: 1200px;
+    }
+
+    h1#welcomeMessage {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2.5rem;
+      margin-top: 0;
+      margin-bottom: 25px;
+      color: #1e293b;
+    }
+
+    .controls {
+      margin-bottom: 30px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .controls button {
+      font-family: 'Oswald', sans-serif;
+      padding: 10px 18px;
+      cursor: pointer;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: white;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    #add-class-btn, #add-row-btn {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+    }
+
+    #add-class-btn:hover, #add-row-btn:hover {
+      background-color: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    /* IMPROVED TABLE UI */
+    .table-wrapper {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+    }
+
+    .deadlinr-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .deadlinr-table th {
+      font-family: 'Oswald', sans-serif;
+      background-color: #f1f5f9; /* Clean gray header */
+      padding: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #64748b;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .deadlinr-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .deadlinr-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Modernized Table Inputs */
+    .assignment-input, .class-select, .status-select, .due-date-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+
+    .assignment-input:focus, .class-select:focus, .status-select:focus, .due-date-input:focus {
+      border-color: #2563eb;
+    }
+
+    /* Delete Logic Styles */
+    .delete-row-btn {
+      background: #fee2e2;
+      color: #ef4444;
+      border: 1px solid #fecaca;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .delete-row-btn:hover:not(:disabled) {
+      background: #ef4444;
+      color: white;
+    }
+
+    .delete-row-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Strikethrough effect */
+    tr.deleting td input,
+    tr.deleting td select {
+      text-decoration: line-through;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    
+    tr.deleting {
+      background-color: #fff1f2;
+    }
+  </style>
 </head>
 <body>
   <div id="sidebar">
-    <img id="logo" src="images/logo.png" alt="Deadlinr Logo">
+    <img id="logo" src="images/logo.png" alt="Deadlinr Logo" onerror="this.style.display='none'; this.after('DEADLINR'); this.nextSibling.style='font-family:Oswald; font-size:1.5rem; color:#2563eb; font-weight:bold;'">
   </div>
   
   <div class="main-page">
@@ -24,31 +174,18 @@
       <table class="deadlinr-table" id="assignment-table">
         <thead>
           <tr>
-            <th>Assignment</th>
-            <th>Class</th>
-            <th>Status</th>
-            <th>Due Date</th>
-            <th>Actions</th>
+            <th style="width: 35%;">Assignment</th>
+            <th style="width: 20%;">Class</th>
+            <th style="width: 15%;">Status</th>
+            <th style="width: 20%;">Due Date</th>
+            <th style="width: 10%;">Actions</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td><input class="assignment-input" type="text" placeholder="Assignment"></td>
-            <td><select class="class-select"></select></td>
-            <td>
-              <select class="status-select status-tag">
-                <option value="todo">To do</option>
-                <option value="in-progress">In progress</option>
-                <option value="done">Done</option>
-              </select>
-            </td>
-            <td><input class="due-date-input" type="date"></td>
-            <td><button class="delete-row-btn">Delete</button></td>
-          </tr>
+        <tbody id="table-body">
+          <!-- Rows will be generated by JavaScript -->
         </tbody>
       </table>
     </div>
   </div>
-  <script src="script.js"></script>
 </body>
 </html>
