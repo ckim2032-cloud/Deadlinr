@@ -227,7 +227,7 @@
 
     function addTask() {
       const tbody = document.querySelector("#assignment-table tbody");
-      const newTask = tbody.insertTask();
+      const newTask = tbody.insertRow();
       const firstSelect = document.querySelector(".class-select");
       const optionsHtml = firstSelect ? firstSelect.innerHTML : "";
       
@@ -242,7 +242,7 @@
           </select>
         </td>
         <td><input class="due-date-input" type="date"></td>
-        <td><button class="delete-row-btn">Delete</button></td>
+        <td><button class="delete-task-btn">Delete</button></td>
       `;
       setupTableEventListeners();
     }
@@ -292,10 +292,22 @@
     }
 
     function setupTableEventListeners() {
-      document.querySelectorAll(".delete-row-btn").forEach(btn => {
+      document.querySelectorAll(".delete-task-btn").forEach(btn => {
         btn.onclick = (e) => e.target.closest("tr").remove();
       });
     }
+    function highlightOverdue() {
+  const today = new Date().toISOString().split("T")[0];
+
+  getRows().forEach(row => {
+    const dueDate = row.querySelector(".due-date-input").value;
+    const status = row.querySelector(".status-select").value;
+
+    if (dueDate && dueDate < today && status !== "done") {
+      row.style.backgroundColor = "#ffe5e5";
+    }
+  });
+}
   </script>
 </body>
 </html>
