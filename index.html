@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Deadlinr</title>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-  </head>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+</head>
 <body>
   <div id="sidebar">
-    <img id="logo" src="images/logo.png" alt="Deadlinr Logo" onerror="this.style.display='none'; this.after('DEADLINR'); this.nextSibling.style='font-family:Oswald; font-size:1.5rem; color:#2563eb; font-weight:bold;'">
+    <img id="logo" src="images/logo.png" alt="Deadlinr Logo">
   </div>
   
   <div class="main-page">
@@ -23,17 +24,31 @@
       <table class="deadlinr-table" id="assignment-table">
         <thead>
           <tr>
-            <th style="width: 35%;">Assignment</th>
-            <th style="width: 20%;">Class</th>
-            <th style="width: 15%;">Status</th>
-            <th style="width: 20%;">Due Date</th>
-            <th style="width: 10%;">Actions</th>
+            <th>Assignment</th>
+            <th>Class</th>
+            <th>Status</th>
+            <th>Due Date</th>
+            <th>Actions</th>
           </tr>
         </thead>
-        <tbody id="table-body">
+        <tbody>
+          <tr>
+            <td><input class="assignment-input" type="text" placeholder="Assignment"></td>
+            <td><select class="class-select"></select></td>
+            <td>
+              <select class="status-select status-tag">
+                <option value="todo">To do</option>
+                <option value="in-progress">In progress</option>
+                <option value="done">Done</option>
+              </select>
+            </td>
+            <td><input class="due-date-input" type="date"></td>
+            <td><button class="delete-row-btn">Delete</button></td>
+          </tr>
         </tbody>
       </table>
     </div>
   </div>
+  <script src="script.js"></script>
 </body>
 </html>
