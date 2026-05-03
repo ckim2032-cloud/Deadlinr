@@ -3,8 +3,23 @@ const CLASS_KEY = "deadlinr_classes";
 
 let masterData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 let classes = JSON.parse(localStorage.getItem(CLASS_KEY)) || ["General"];
-let currentWeekStart = new Date();
-currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay());
+let currentWeekStart = getWeekStart(new Date());
+let calendarAnimating = false;
+
+function getWeekStart(date) {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  const day = d.getDay();
+  d.setDate(d.getDate() - day);
+  return d;
+}
+
+function formatDateKey(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
 
 function switchView(viewId) {
   document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
@@ -27,7 +42,7 @@ function addClassFromPrompt() {
     if (!classes.includes(cleanName)) {
       classes.push(cleanName);
       save();
-      renderAll(); 
+      renderAll();
     }
   }
 }
@@ -50,12 +65,12 @@ function deleteClassFromPrompt() {
 }
 
 function addRow() {
-  masterData.push({ 
-    name: "", 
-    class: classes[0], 
-    status: "todo", 
-    date: "", 
-    priority: "med" 
+  masterData.push({
+    name: "",
+    class: classes[0],
+    status: "todo",
+    date: "",
+    priority: "med"
   });
   save();
   renderAll();
@@ -66,10 +81,10 @@ function updateTask(index, key, val) {
     masterData[index][key] = val;
     save();
     if (key === 'date' || key === 'status') {
-        renderAll();
+      renderAll();
     } else {
-        renderTasksBoard();
-        updateStats();
+      renderTasksBoard();
+      updateStats();
     }
   }
 }
@@ -83,9 +98,9 @@ function deleteTask(index) {
 function calculatePriority(dueDate, status) {
   if (!dueDate) return { label: 'Low', class: 'prio-low', score: 0 };
   const today = new Date().toISOString().split('T')[0];
-  
+
   if (status !== 'done' && dueDate < today) {
-      return { label: 'Overdue', class: 'prio-overdue', score: 4 };
+    return { label: 'Overdue', class: 'prio-overdue', score: 4 };
   }
 
   const todayObj = new Date();
@@ -102,7 +117,7 @@ function updateStats() {
   const done = masterData.filter(t => t.status === 'done').length;
   const progress = masterData.filter(t => t.status === 'in-progress').length;
   const overdue = masterData.filter(t => t.status !== 'done' && t.date && t.date < today).length;
-  
+
   document.getElementById('stat-total').textContent = masterData.length;
   document.getElementById('stat-done').textContent = done;
   document.getElementById('stat-progress').textContent = progress;
@@ -154,7 +169,7 @@ function renderTasksBoard() {
   masterData.forEach(t => {
     let key = t.status === 'in-progress' ? 'progress' : t.status;
     if (t.status !== 'done' && t.date && t.date < today) key = 'overdue';
-    
+
     const card = document.createElement("div");
     card.className = "mini-task-card";
     card.innerHTML = `<span class="tag">${t.class}</span><div><strong>${t.name || '...'}</strong></div><small>${t.date || 'No date'}</small>`;
@@ -162,81 +177,118 @@ function renderTasksBoard() {
   });
 }
 
+function animateWeek(direction, newStart) {
+  if (calendarAnimating) return;
+  const wrap = document.getElementById("calendar-viewport");
+  const grid = document.getElementById("calendar-grid");
+  if (!wrap || !grid) return;
+
+  calendarAnimating = true;
+  const offset = direction === "next" ? -80 : 80;
+
+  grid.style.transition = "transform 220ms ease, opacity 220ms ease";
+  grid.style.transform = `translateX(${offset}px)`;
+  grid.style.opacity = "0";
+
+  setTimeout(() => {
+    currentWeekStart = newStart;
+    renderCalendar(false);
+    grid.style.transition = "none";
+    grid.style.transform = `translateX(${-offset}px)`;
+    grid.style.opacity = "0";
+    requestAnimationFrame(() => {
+      grid.style.transition = "transform 220ms ease, opacity 220ms ease";
+      grid.style.transform = "translateX(0)";
+      grid.style.opacity = "1";
+    });
+    setTimeout(() => {
+      calendarAnimating = false;
+    }, 240);
+  }, 220);
+}
+
 function prevWeek() {
-  currentWeekStart.setDate(currentWeekStart.getDate() - 7);
-  renderCalendar();
+  const newStart = getWeekStart(new Date(currentWeekStart.getTime() - 7 * 24 * 60 * 60 * 1000));
+  animateWeek("prev", newStart);
 }
 
 function nextWeek() {
-  currentWeekStart.setDate(currentWeekStart.getDate() + 7);
-  renderCalendar();
+  const newStart = getWeekStart(new Date(currentWeekStart.getTime() + 7 * 24 * 60 * 60 * 1000));
+  animateWeek("next", newStart);
 }
 
 function todayView() {
-  currentWeekStart = new Date();
-  currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay());
-  renderCalendar();
+  const newStart = getWeekStart(new Date());
+  animateWeek("next", newStart);
 }
 
-function renderCalendar() {
+function renderCalendar(skipWeekLabel = false) {
   const grid = document.getElementById("calendar-grid");
   if (!grid) return;
-  
-  grid.innerHTML = "";
-  
+
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  days.forEach(day => {
-    const header = document.createElement('div');
-    header.className = 'calendar-header';
-    header.textContent = day;
+  const weekDates = [];
+
+  grid.innerHTML = "";
+
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(currentWeekStart);
+    date.setDate(currentWeekStart.getDate() + i);
+    weekDates.push(date);
+
+    const header = document.createElement("div");
+    header.className = "calendar-header";
+    header.innerHTML = `
+      <div class="calendar-header-day">${days[i]}</div>
+      <div class="calendar-header-date">${date.getDate()}</div>
+    `;
     grid.appendChild(header);
-  });
-  
-  for (let week = 0; week < 6; week++) {
-    for (let day = 0; day < 7; day++) {
-      const date = new Date(currentWeekStart);
-      date.setDate(currentWeekStart.getDate() + (week * 7) + day);
-      
-      const dayDiv = document.createElement('div');
-      dayDiv.className = 'calendar-day';
-      
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      if (date.toDateString() === today.toDateString()) {
-        dayDiv.classList.add('today');
-      }
-      
-      const dateStr = date.toISOString().split('T')[0];
-      const dayTasks = masterData.filter(task => task.date === dateStr);
-      
-      dayDiv.innerHTML = `
-        <div class="calendar-day-header">
-          ${date.getDate()}
-          <span style="font-size: 0.7rem; opacity: 0.6;">
-            ${date.toLocaleDateString('en-US', { month: 'short' })}
-          </span>
-        </div>
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  weekDates.forEach(date => {
+    const dayCell = document.createElement("div");
+    dayCell.className = "calendar-day";
+
+    const dateCopy = new Date(date);
+    dateCopy.setHours(0, 0, 0, 0);
+
+    if (dateCopy.toDateString() === today.toDateString()) {
+      dayCell.classList.add("today");
+    }
+
+    const dateStr = formatDateKey(date);
+    const dayTasks = masterData.filter(task => task.date === dateStr);
+
+    dayCell.innerHTML = `
+      <div class="calendar-day-top">
+        <span class="calendar-day-number">${date.getDate()}</span>
+        <span class="calendar-day-month">${date.toLocaleDateString('en-US', { month: 'short' })}</span>
+      </div>
+      <div class="calendar-day-events">
         ${dayTasks.map(task => `
-          <div class="calendar-task-widget">
+          <div class="calendar-task-widget status-${task.status}">
             <div class="calendar-task-name">${task.name || 'Untitled'}</div>
-            <div class="calendar-task-class">${task.class}</div>
-            <div class="calendar-task-status status-${task.status}">
-              ${task.status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-            </div>
+            <div class="calendar-task-class">${task.class || 'General'}</div>
+            <div class="calendar-task-status">${task.status.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase())}</div>
           </div>
         `).join('')}
-      `;
-      
-      grid.appendChild(dayDiv);
+      </div>
+    `;
+
+    grid.appendChild(dayCell);
+  });
+
+  if (!skipWeekLabel) {
+    const endDate = new Date(currentWeekStart);
+    endDate.setDate(endDate.getDate() + 6);
+    const label = document.getElementById("week-range");
+    if (label) {
+      label.textContent = `${currentWeekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
     }
   }
-  
-  const endDate = new Date(currentWeekStart);
-  endDate.setDate(endDate.getDate() + 41);
-  document.getElementById('week-range').textContent = 
-    `${currentWeekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - 
-     ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
 }
 
 function renderProjects() {
@@ -247,8 +299,8 @@ function renderProjects() {
   const sorted = [...masterData]
     .map(t => ({ ...t, prio: calculatePriority(t.date, t.status) }))
     .sort((a, b) => {
-        if (b.prio.score !== a.prio.score) return b.prio.score - a.prio.score;
-        return (a.date || '9999').localeCompare(b.date || '9999');
+      if (b.prio.score !== a.prio.score) return b.prio.score - a.prio.score;
+      return (a.date || '9999').localeCompare(b.date || '9999');
     });
 
   sorted.forEach((t) => {
@@ -264,19 +316,19 @@ function renderProjects() {
 }
 
 function setTheme(theme) {
-  if (theme === 'light') { 
-    document.body.classList.add('light-theme'); 
-    document.getElementById('light-btn').classList.add('active'); 
-    document.getElementById('dark-btn').classList.remove('active'); 
-  } else { 
-    document.body.classList.remove('light-theme'); 
-    document.getElementById('dark-btn').classList.add('active'); 
-    document.getElementById('light-btn').classList.remove('active'); 
+  if (theme === 'light') {
+    document.body.classList.add('light-theme');
+    document.getElementById('light-btn').classList.add('active');
+    document.getElementById('dark-btn').classList.remove('active');
+  } else {
+    document.body.classList.remove('light-theme');
+    document.getElementById('dark-btn').classList.add('active');
+    document.getElementById('light-btn').classList.remove('active');
   }
 }
 
-window.onload = () => { 
-  renderAll(); 
+window.onload = () => {
+  renderAll();
   const hour = new Date().getHours();
   const msg = hour < 12 ? "Good morning!" : hour < 17 ? "Good afternoon!" : "Good evening!";
   document.getElementById('welcomeMessage').textContent = msg;
