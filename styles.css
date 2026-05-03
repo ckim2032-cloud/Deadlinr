@@ -389,3 +389,7 @@ header { display: flex; justify-content: space-between; align-items: flex-start;
   background: rgba(168, 85, 247, 0.18);
   color: #c084fc;
 }
+#overdue-card {
+  background: #fb7a7a;
+  border-color: #f84242;
+}
