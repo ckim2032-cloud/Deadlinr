@@ -66,15 +66,17 @@
     <div class="section-header">
       <h2>Weekly Calendar</h2>
       <div class="controls">
-        <button class="btn-secondary" id="prev-week" onclick="prevWeek()">← Prev</button>
+        <button class="btn-secondary" onclick="prevWeek()">← Prev</button>
         <span id="week-range" style="color: var(--text-muted); font-weight: 500;"></span>
-        <button class="btn-secondary" id="next-week" onclick="nextWeek()">Next →</button>
+        <button class="btn-secondary" onclick="nextWeek()">Next →</button>
         <button class="btn-secondary" onclick="todayView()">Today</button>
         <button class="btn-secondary" onclick="addClassFromPrompt()">New Class</button>
       </div>
     </div>
     <div class="calendar-container">
-      <div class="calendar-grid" id="calendar-grid"></div>
+      <div class="calendar-viewport" id="calendar-viewport">
+        <div class="calendar-grid" id="calendar-grid"></div>
+      </div>
     </div>
   </section>
 </div>
