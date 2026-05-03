@@ -3,6 +3,8 @@ const CLASS_KEY = "deadlinr_classes";
 
 let masterData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 let classes = JSON.parse(localStorage.getItem(CLASS_KEY)) || ["General"];
+let currentWeekStart = new Date();
+currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay());
 
 function switchView(viewId) {
   document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
@@ -160,17 +162,81 @@ function renderTasksBoard() {
   });
 }
 
+function prevWeek() {
+  currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+  renderCalendar();
+}
+
+function nextWeek() {
+  currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+  renderCalendar();
+}
+
+function todayView() {
+  currentWeekStart = new Date();
+  currentWeekStart.setDate(currentWeekStart.getDate() - currentWeekStart.getDay());
+  renderCalendar();
+}
+
 function renderCalendar() {
-  const body = document.getElementById("calendar-body");
-  if (!body) return;
-  body.innerHTML = "";
-  [...masterData]
-    .sort((a,b) => (a.date || '9999') > (b.date || '9999') ? 1 : -1)
-    .forEach(t => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td>${t.date || '---'}</td><td>${t.class}</td><td>${t.name || 'Untitled'}</td><td>${t.status}</td>`;
-      body.appendChild(tr);
-    });
+  const grid = document.getElementById("calendar-grid");
+  if (!grid) return;
+  
+  grid.innerHTML = "";
+  
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  days.forEach(day => {
+    const header = document.createElement('div');
+    header.className = 'calendar-header';
+    header.textContent = day;
+    grid.appendChild(header);
+  });
+  
+  for (let week = 0; week < 6; week++) {
+    for (let day = 0; day < 7; day++) {
+      const date = new Date(currentWeekStart);
+      date.setDate(currentWeekStart.getDate() + (week * 7) + day);
+      
+      const dayDiv = document.createElement('div');
+      dayDiv.className = 'calendar-day';
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      if (date.toDateString() === today.toDateString()) {
+        dayDiv.classList.add('today');
+      }
+      
+      const dateStr = date.toISOString().split('T')[0];
+      const dayTasks = masterData.filter(task => task.date === dateStr);
+      
+      dayDiv.innerHTML = `
+        <div class="calendar-day-header">
+          ${date.getDate()}
+          <span style="font-size: 0.7rem; opacity: 0.6;">
+            ${date.toLocaleDateString('en-US', { month: 'short' })}
+          </span>
+        </div>
+        ${dayTasks.map(task => `
+          <div class="calendar-task-widget">
+            <div class="calendar-task-name">${task.name || 'Untitled'}</div>
+            <div class="calendar-task-class">${task.class}</div>
+            <div class="calendar-task-status status-${task.status}">
+              ${task.status.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+            </div>
+          </div>
+        `).join('')}
+      `;
+      
+      grid.appendChild(dayDiv);
+    }
+  }
+  
+  const endDate = new Date(currentWeekStart);
+  endDate.setDate(endDate.getDate() + 41);
+  document.getElementById('week-range').textContent = 
+    `${currentWeekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - 
+     ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
 }
 
 function renderProjects() {
