@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deadlinr- Keep Track of Your Work</title>
+  <title>Deadlinr Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -15,7 +15,7 @@
       --accent-purple: #a855f7;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --border-color: #334155;
+      --border-gradient: linear-gradient(135deg, #3b82f6, #22c55e);
     }
 
     body.light-theme {
@@ -24,7 +24,6 @@
       --card-bg: #ffffff;
       --text-main: #1e293b;
       --text-muted: #64748b;
-      --border-color: #e2e8f0;
     }
 
     * { box-sizing: border-box; }
@@ -41,7 +40,8 @@
     #sidebar { 
       width: 240px; height: 100vh; position: fixed; left: 0; top: 0; 
       background-color: var(--sidebar-bg); 
-      border-right: 1px solid var(--border-color); 
+      border-right: 2px solid;
+      border-image: var(--border-gradient) 1;
       padding: 20px;
       display: flex;
       flex-direction: column;
@@ -49,7 +49,7 @@
     }
 
     #logo-container { display: flex; align-items: center; margin-bottom: 40px; gap: 10px; }
-    #logo-icon { width: 30px; height: 30px; background: var(--accent-blue); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; }
+    #logo-img { width: 35px; height: 35px; object-fit: contain; }
     #logo-text { font-family: 'Oswald', sans-serif; font-size: 1.5rem; letter-spacing: 1px; }
 
     .nav-item {
@@ -67,7 +67,12 @@
       background: rgba(59, 130, 246, 0.1);
       color: var(--text-main);
     }
-    .nav-item.active { border-left: 3px solid var(--accent-blue); border-radius: 0 8px 8px 0; font-weight: 600; }
+    .nav-item.active { 
+      border-left: 3px solid;
+      border-image: var(--border-gradient) 0 0 0 1;
+      border-radius: 0 8px 8px 0; 
+      font-weight: 600; 
+    }
 
     .main-page { margin-left: 240px; flex: 1; padding: 30px; width: calc(100% - 240px); }
 
@@ -89,17 +94,31 @@
       background: var(--card-bg);
       padding: 20px;
       border-radius: 15px;
-      border: 1px solid var(--border-color);
+      position: relative;
     }
+    .stat-card::before, .content-section::before, .mini-task-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border-radius: inherit;
+      padding: 1.5px; 
+      background: var(--border-gradient);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
     .stat-card h3 { color: var(--text-muted); font-size: 0.9rem; margin: 0 0 10px 0; }
     .stat-val { font-size: 2rem; font-weight: 700; margin: 0; }
 
     .content-section {
       background: var(--card-bg);
       border-radius: 15px;
-      border: 1px solid var(--border-color);
       padding: 25px;
       margin-bottom: 20px;
+      position: relative;
     }
 
     .section-header {
@@ -123,17 +142,25 @@
     }
     .controls .btn-secondary {
       background: transparent;
-      border: 1px solid var(--border-color);
+      border: 1px solid;
+      border-image: var(--border-gradient) 1;
       color: var(--text-main);
     }
 
     .deadlinr-table { width: 100%; border-collapse: collapse; text-align: left; }
-    .deadlinr-table th { color: var(--text-muted); font-size: 0.85rem; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+    .deadlinr-table th { 
+      color: var(--text-muted); 
+      font-size: 0.85rem; 
+      padding-bottom: 15px; 
+      border-bottom: 1px solid transparent;
+      border-image: var(--border-gradient) 1;
+    }
     .deadlinr-table td { padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
     .assignment-input, .class-select, .status-select, .due-date-input, .priority-badge {
       background: rgba(0,0,0,0.1);
-      border: 1px solid var(--border-color);
+      border: 1px solid transparent;
+      border-image: var(--border-gradient) 1;
       color: inherit;
       padding: 8px 12px;
       border-radius: 6px;
@@ -150,20 +177,43 @@
         text-transform: uppercase;
         text-align: center;
         width: auto;
+        border-image: none !important;
+        border: 1px solid transparent;
     }
-    .prio-high { background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; }
-    .prio-med { background: #fef3c7; color: #d97706; border: 1px solid #fde68a; }
-    .prio-low { background: #d1fae5; color: #059669; border: 1px solid #a7f3d0; }
+    .prio-high { background: #fee2e2; color: #ef4444; border-color: #fecaca; }
+    .prio-med { background: #fef3c7; color: #d97706; border-color: #fde68a; }
+    .prio-low { background: #d1fae5; color: #059669; border-color: #a7f3d0; }
+    .prio-overdue { background: #450a0a; color: #f87171; border-color: #991b1b; }
 
     .tasks-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
     .task-col { background: rgba(0,0,0,0.05); border-radius: 12px; padding: 15px; min-height: 400px; }
-    .task-col h4 { margin-top: 0; color: var(--text-muted); border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
-    .mini-task-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; margin-bottom: 10px; }
+    .task-col h4 { 
+      margin-top: 0; 
+      color: var(--text-muted); 
+      border-bottom: 2px solid; 
+      border-image: var(--border-gradient) 1;
+      padding-bottom: 10px; 
+    }
+    .mini-task-card { 
+      background: var(--card-bg); 
+      padding: 12px; 
+      border-radius: 8px; 
+      margin-bottom: 10px; 
+      position: relative;
+    }
     .mini-task-card .tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; background: var(--accent-blue); color: white; margin-bottom: 5px; display: inline-block; }
 
     .theme-toggle-card { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; }
-    .toggle-btn { padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-color); cursor: pointer; background: var(--card-bg); color: var(--text-main); }
-    .toggle-btn.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); }
+    .toggle-btn { 
+      padding: 10px 20px; 
+      border-radius: 8px; 
+      border: 1px solid transparent; 
+      border-image: var(--border-gradient) 1;
+      cursor: pointer; 
+      background: var(--card-bg); 
+      color: var(--text-main); 
+    }
+    .toggle-btn.active { background: var(--accent-blue); color: white; border-image: none; border-color: var(--accent-blue); }
 
     .delete-row-btn { background: none; border: 1px solid #ef4444; color: #ef4444; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
     .delete-row-btn:hover { background: #ef4444; color: white; }
@@ -174,7 +224,7 @@
 <body class="dark-theme">
   <nav id="sidebar">
     <div id="logo-container">
-      <div id="logo-icon">✓</div>
+      <img src="logo.png" id="logo-img" alt="Logo">
       <div id="logo-text">Deadlinr</div>
     </div>
     <div class="nav-item active" id="nav-dashboard" onclick="switchView('dashboard')">Dashboard</div>
@@ -270,7 +320,7 @@
             <button class="toggle-btn" id="light-btn" onclick="setTheme('light')">Light Clean</button>
           </div>
         </div>
-        <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;">
+        <hr style="border: 0; border-top: 1px solid; border-image: var(--border-gradient) 1; margin: 30px 0;">
         <h2>Manage Data</h2>
         <div class="theme-toggle-card">
           <p>Class List Management:</p>
@@ -349,11 +399,9 @@
       if (masterData[index]) {
         masterData[index][key] = val;
         save();
-
         if (key === 'date' || key === 'status') {
             renderAll();
         } else {
-
             renderTasksBoard();
             updateStats();
         }
@@ -366,11 +414,17 @@
       renderAll();
     }
 
-    function calculatePriority(dueDate) {
+    function calculatePriority(dueDate, status) {
         if (!dueDate) return { label: 'Low', class: 'prio-low', score: 0 };
-        const today = new Date();
-        const due = new Date(dueDate);
-        const diffDays = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+        const today = new Date().toISOString().split('T')[0];
+        
+        if (status !== 'done' && dueDate < today) {
+            return { label: 'Overdue', class: 'prio-overdue', score: 4 };
+        }
+
+        const todayObj = new Date();
+        const dueObj = new Date(dueDate);
+        const diffDays = Math.ceil((dueObj - todayObj) / (1000 * 60 * 60 * 24));
 
         if (diffDays <= 3) return { label: 'High', class: 'prio-high', score: 3 };
         if (diffDays <= 7) return { label: 'Med', class: 'prio-med', score: 2 };
@@ -461,7 +515,7 @@
       body.innerHTML = "";
 
       const sorted = [...masterData]
-        .map(t => ({ ...t, prio: calculatePriority(t.date) }))
+        .map(t => ({ ...t, prio: calculatePriority(t.date, t.status) }))
         .sort((a, b) => {
             if (b.prio.score !== a.prio.score) return b.prio.score - a.prio.score;
             return (a.date || '9999').localeCompare(b.date || '9999');
