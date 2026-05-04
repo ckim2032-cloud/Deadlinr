@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Deadlinr Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+  //fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="styles.css">
+  >
 </head>
 <body class="dark-theme">
   <div id="onboarding">
@@ -70,12 +70,12 @@
         </section>
 
         <div id="dashboard-widgets" style="display: grid; grid-template-columns: 1fr; gap: 24px;">
-          <section class="content-section card-tasks" id="widget-tasks">
+          <div class="content-section card-tasks" id="widget-tasks">
             <div class="section-header">
               <h2><i data-lucide="sparkles" size="20"></i> Priority Focus</h2>
             </div>
             <div id="dashboard-tasks" class="task-list"></div>
-          </section>
+          </div>
         </div>
       </div>
 
@@ -174,11 +174,11 @@
     <div class="modal">
       <h2 style="font-family: 'Oswald'; margin-bottom: 30px; font-size: 1.8rem;">New Assignment</h2>
       <div class="form-group">
-        <label>WHAT'S THE TASK?</label>
+        abel>WHAT'S THE TASK?</label>
         <input type="text" id="m-name" class="form-input" placeholder="e.g. Physics Lab Report">
       </div>
       <div class="form-group">
-        <label>DUE DATE</label>
+        abel>DUE DATE</label>
         <input type="date" id="m-date" class="form-input">
       </div>
       <div class="modal-btns">
@@ -199,48 +199,6 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deadlinr Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body class="dark-theme">
-  <div id="onboarding">
-    <div class="onboard-card">
-      <div class="onboard-logo">Deadlinr</div>
-      <p style="color: var(--text-muted); margin-bottom: 30px; font-weight: 500;">Clear your mind. Own your schedule.</p>
-      <input type="text" id="user-name-input" class="onboard-input" placeholder="What's your name?" autocomplete="off">
-      <button class="onboard-btn" onclick="initApp()">Enter Workspace</button>
-    </div>
-  </div>
-  <div id="app-container">
-    <nav id="sidebar">
-      <div class="brand"><div class="brand-logo"><i data-lucide="check" size="22" color="white"></i></div><div class="brand-name">Deadlinr</div></div>
-      <button class="btn-new-task" onclick="openModal()"><i data-lucide="plus-circle" size="20"></i> New Task</button>
-      <div id="sidebar-nav">
-        <div class="nav-item active" onclick="navigate('dashboard')"><i data-lucide="layout-grid" size="20"></i> Dashboard</div>
-        <div class="nav-item" onclick="navigate('tasks')"><i data-lucide="layers" size="20"></i> Focus List</div>
-        <div class="nav-item" onclick="navigate('timer')"><i data-lucide="timer" size="20"></i> Focus Timer</div>
-        <div class="nav-item" onclick="navigate('calendar')"><i data-lucide="calendar-days" size="20"></i> Calendar</div>
-        <div class="nav-item" onclick="navigate('stats')"><i data-lucide="trending-up" size="20"></i> Analytics</div>
-        <div class="nav-item" onclick="navigate('settings')"><i data-lucide="sliders" size="20"></i> Settings</div>
-      </div>
-    </nav>
-    <main id="main-wrapper">
-      <header><div><h2 id="welcome-text">Hey!</h2><p id="date-subtitle"></p></div></header>
-      <div id="page-dashboard" class="page active"></div>
-      <div id="page-tasks" class="page"></div>
-      <div id="page-timer" class="page"></div>
-      <div id="page-calendar" class="page"></div>
-    </main>
-  </div>
   <script src="script.js"></script>
 </body>
 </html>
