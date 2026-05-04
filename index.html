@@ -12,8 +12,7 @@
   <div id="onboarding">
     <div class="onboard-card">
       <div class="onboard-logo">Deadlinr</div>
-      <p style="color: var(--text-muted); margin-bottom: 30px; font-weight: 500;">Clear your mind. Own your schedule.</p>
-      <input type="text" id="user-name-input" class="onboard-input" placeholder="What's your name?" autocomplete="off">
+      <input type="text" id="user-name-input" class="onboard-input" placeholder="What's your name?">
       <button class="onboard-btn" onclick="initApp()">Enter Workspace</button>
     </div>
   </div>
@@ -22,21 +21,19 @@
       <div class="brand"><div class="brand-logo"><i data-lucide="check" size="22" color="white"></i></div><div class="brand-name">Deadlinr</div></div>
       <button class="btn-new-task" onclick="openModal()"><i data-lucide="plus-circle" size="20"></i> New Task</button>
       <div id="sidebar-nav">
-        <div class="nav-item active" onclick="navigate('dashboard')"><i data-lucide="layout-grid" size="20"></i> Dashboard</div>
-        <div class="nav-item" onclick="navigate('tasks')"><i data-lucide="layers" size="20"></i> Focus List</div>
-        <div class="nav-item" onclick="navigate('timer')"><i data-lucide="timer" size="20"></i> Focus Timer</div>
-        <div class="nav-item" onclick="navigate('calendar')"><i data-lucide="calendar-days" size="20"></i> Calendar</div>
-        <div class="nav-item" onclick="navigate('stats')"><i data-lucide="trending-up" size="20"></i> Analytics</div>
-        <div class="nav-item" onclick="navigate('settings')"><i data-lucide="sliders" size="20"></i> Settings</div>
+        <div class="nav-item active" onclick="navigate('dashboard')">Dashboard</div>
+        <div class="nav-item" onclick="navigate('tasks')">Focus List</div>
+        <div class="nav-item" onclick="navigate('timer')">Focus Timer</div>
       </div>
     </nav>
-    <main id="main-wrapper">
-      <header><div><h2 id="welcome-text">Hey!</h2><p id="date-subtitle"></p></div></header>
-      <div id="page-dashboard" class="page active"></div>
-      <div id="page-tasks" class="page"></div>
-      <div id="page-timer" class="page"></div>
-      <div id="page-calendar" class="page"></div>
-    </main>
+    <div id="content-wrapper">
+      <main id="main-wrapper">
+        <header><h2 id="welcome-text">Hey!</h2></header>
+        <div id="page-dashboard" class="page active"><section class="stats-grid"></section><div id="dashboard-widgets"></div></div>
+        <div id="page-tasks" class="page"><section class="content-section"><div id="all-tasks-list"></div></section></div>
+        <div id="page-timer" class="page"><section class="content-section"><div id="timer-display">25:00</div></section></div>
+      </main>
+    </div>
   </div>
   <script src="script.js"></script>
 </body>
