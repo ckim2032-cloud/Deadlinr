@@ -4,201 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Deadlinr Dashboard</title>
-  //fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
-  >
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body class="dark-theme">
   <div id="onboarding">
     <div class="onboard-card">
       <div class="onboard-logo">Deadlinr</div>
-      <p style="color: var(--text-muted); margin-bottom: 30px; font-weight: 500;">Clear your mind. Own your schedule.</p>
-      <input type="text" id="user-name-input" class="onboard-input" placeholder="What's your name?" autocomplete="off">
+      <input type="text" id="user-name-input" class="onboard-input" placeholder="What's your name?">
       <button class="onboard-btn" onclick="initApp()">Enter Workspace</button>
     </div>
   </div>
-
   <div id="app-container">
     <nav id="sidebar">
-      <div class="brand">
-        <div class="brand-logo"><i data-lucide="check" size="22" color="white"></i></div>
-        <div class="brand-name">Deadlinr</div>
-      </div>
+      <div class="brand"><div class="brand-logo"><i data-lucide="check" size="22" color="white"></i></div><div class="brand-name">Deadlinr</div></div>
       <button class="btn-new-task" onclick="openModal()"><i data-lucide="plus-circle" size="20"></i> New Task</button>
       <div id="sidebar-nav">
         <div class="nav-item active" onclick="navigate('dashboard')"><i data-lucide="layout-grid" size="20"></i> Dashboard</div>
         <div class="nav-item" onclick="navigate('tasks')"><i data-lucide="layers" size="20"></i> Focus List</div>
         <div class="nav-item" onclick="navigate('timer')"><i data-lucide="timer" size="20"></i> Focus Timer</div>
-        <div class="nav-item" onclick="navigate('calendar')"><i data-lucide="calendar-days" size="20"></i> Calendar</div>
-        <div class="nav-item" onclick="navigate('stats')"><i data-lucide="trending-up" size="20"></i> Analytics</div>
-        <div class="nav-item" onclick="navigate('settings')"><i data-lucide="sliders" size="20"></i> Settings</div>
-      </div>
-      <div style="margin-top: auto; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 20px; border: 1px solid var(--card-border); display: flex; align-items: center; gap: 12px;">
-        <img src="" id="user-avatar" style="width: 44px; height: 44px; border-radius: 12px; object-fit: cover;">
-        <div style="overflow: hidden;">
-          <div id="side-name" style="font-weight: 800; font-size: 0.9rem; white-space: nowrap; text-overflow: ellipsis;">User</div>
-          <span style="color: var(--accent-green); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Pro Member</span>
-        </div>
       </div>
     </nav>
-
     <main id="main-wrapper">
-      <header>
-        <div>
-          <h2 id="welcome-text" style="font-family: 'Oswald'; font-size: 2rem;">Hey!</h2>
-          <p id="date-subtitle" style="color: var(--text-muted); font-size: 0.9rem; font-weight: 500;"></p>
-        </div>
-        <div class="search-container">
-          <i data-lucide="search" size="18" color="#94a3b8"></i>
-          <input type="text" placeholder="Search your future..." oninput="handleSearch(this.value)">
-        </div>
-      </header>
-
-      <div id="page-dashboard" class="page active">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-          <h3 style="font-family: 'Oswald'; font-size: 1.2rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Live Overview</h3>
-          <button onclick="openCustomizer()" style="background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--card-border); padding: 8px 16px; border-radius: 12px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-            <i data-lucide="settings-2" size="14"></i> Customize
-          </button>
-        </div>
-
-        <section class="stats-grid">
-          <div class="stat-card stat-total"><h3>Total Tasks</h3><p class="stat-val" id="stat-total">0</p></div>
-          <div class="stat-card stat-overdue"><h3>Overdue</h3><p class="stat-val" id="stat-overdue">0</p></div>
-          <div class="stat-card stat-completed"><h3>Completed</h3><p class="stat-val" id="stat-done">0</p></div>
-          <div class="stat-card stat-progress"><h3>In Progress</h3><p class="stat-val" id="stat-high">0</p></div>
-        </section>
-
-        <div id="dashboard-widgets" style="display: grid; grid-template-columns: 1fr; gap: 24px;">
-          <div class="content-section card-tasks" id="widget-tasks">
-            <div class="section-header">
-              <h2><i data-lucide="sparkles" size="20"></i> Priority Focus</h2>
-            </div>
-            <div id="dashboard-tasks" class="task-list"></div>
-          </div>
-        </div>
-      </div>
-
-      <div id="page-tasks" class="page">
-        <section class="content-section">
-          <div class="section-header">
-            <h2><i data-lucide="list-checks" size="20"></i> Your Master List</h2>
-            <div class="controls">
-              <span style="font-size: 0.8rem; color: var(--text-muted); align-self: center;">Sort by</span>
-              <select id="filter-prio" onchange="renderTasks()" style="background: #0f172a; color: white; border: 1px solid var(--card-border); padding: 8px 16px; border-radius: 12px; font-weight: 600;">
-                <option value="all">Everything</option>
-                <option value="Overdue">Overdue</option>
-                <option value="High">Urgent (High)</option>
-                <option value="Medium">Upcoming (Med)</option>
-                <option value="Low">Relax (Low)</option>
-              </select>
-            </div>
-          </div>
-          <div id="all-tasks-list" class="task-list"></div>
-        </section>
-      </div>
-
-      <div id="page-timer" class="page">
-        <section class="content-section" style="text-align: center; padding: 60px;">
-          <h2><i data-lucide="timer" size="20"></i> Focus Timer</h2>
-          <p style="color: var(--text-muted); margin-bottom: 20px;">Lock in and clear your list.</p>
-          <div class="timer-display" id="timer-display">25:00</div>
-          <div class="timer-controls">
-            <button class="timer-btn reset" onclick="resetTimer()">Reset</button>
-            <button class="timer-btn start" id="timer-toggle" onclick="toggleTimer()">Start Session</button>
-          </div>
-          <div class="timer-presets">
-            <button class="preset-btn active" onclick="setTimer(25)">25m (Focus)</button>
-            <button class="preset-btn" onclick="setTimer(5)">5m (Break)</button>
-            <button class="preset-btn" onclick="setTimer(15)">15m (Long Break)</button>
-          </div>
-        </section>
-      </div>
-
-      <div id="page-calendar" class="page">
-        <section class="content-section">
-          <div class="section-header">
-            <h2 id="cal-month-title">May 2026</h2>
-            <div class="controls">
-              <button class="btn-secondary" onclick="prevMonth()">←</button>
-              <button class="btn-secondary" onclick="nextMonth()">→</button>
-            </div>
-          </div>
-          <div class="cal-header-row">
-            <div class="cal-header-day">Mon</div>
-            <div class="cal-header-day">Tue</div>
-            <div class="cal-header-day">Wed</div>
-            <div class="cal-header-day">Thu</div>
-            <div class="cal-header-day">Fri</div>
-            <div class="cal-header-day">Sat</div>
-            <div class="cal-header-day">Sun</div>
-          </div>
-          <div class="cal-grid" id="calendar-grid"></div>
-        </section>
-      </div>
-
-      <div id="page-stats" class="page">
-        <section class="content-section" style="text-align: center; padding: 60px;">
-          <h2 style="justify-content: center;">Performance Analytics</h2>
-          <div style="margin-top: 50px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
-            <div style="background: rgba(16, 185, 129, 0.05); padding: 40px; border-radius: 32px; border: 1px solid rgba(16, 185, 129, 0.1);">
-              <div style="font-size: 4rem; font-weight: 800; color: var(--accent-green); font-family: 'Oswald';" id="stat-perc">0%</div>
-              <p style="font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">Tasks Completed</p>
-            </div>
-            <div style="background: rgba(59, 130, 246, 0.05); padding: 40px; border-radius: 32px; border: 1px solid rgba(59, 130, 246, 0.1);">
-              <div style="font-size: 4rem; font-weight: 800; color: var(--accent-blue); font-family: 'Oswald';" id="stat-streak">0</div>
-              <p style="font-weight: 700; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">Productive Days</p>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <div id="page-settings" class="page">
-        <section class="content-section">
-          <h2>Settings</h2>
-          <div style="margin-top: 30px; border-top: 1px solid var(--card-border); padding-top: 30px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-              <div>
-                <h4 style="margin-bottom: 4px;">Dangerous Territory</h4>
-                <p style="font-size: 0.85rem; color: var(--text-secondary);">Permanently wipe all your student data and tasks.</p>
-              </div>
-              <button onclick="clearStorage()" style="padding: 12px 24px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; font-weight: 700; cursor: pointer;">Reset Workspace</button>
-            </div>
-          </div>
-        </section>
-      </div>
+      <header><div><h2 id="welcome-text">Hey!</h2></div></header>
+      <div id="page-dashboard" class="page active"><section class="stats-grid"></section><div id="dashboard-widgets"></div></div>
+      <div id="page-tasks" class="page"><section class="content-section"><div id="all-tasks-list"></div></section></div>
+      <div id="page-timer" class="page"><section class="content-section"><div id="timer-display">25:00</div></section></div>
     </main>
   </div>
-
-  <div id="modal-overlay">
-    <div class="modal">
-      <h2 style="font-family: 'Oswald'; margin-bottom: 30px; font-size: 1.8rem;">New Assignment</h2>
-      <div class="form-group">
-        abel>WHAT'S THE TASK?</label>
-        <input type="text" id="m-name" class="form-input" placeholder="e.g. Physics Lab Report">
-      </div>
-      <div class="form-group">
-        abel>DUE DATE</label>
-        <input type="date" id="m-date" class="form-input">
-      </div>
-      <div class="modal-btns">
-        <button style="flex: 1; padding: 16px; border-radius: 16px; background: rgba(255,255,255,0.05); color: white; border: none; font-weight: 700; cursor: pointer;" onclick="closeModal()">Cancel</button>
-        <button style="flex: 2; padding: 16px; border-radius: 16px; background: white; color: black; border: none; font-weight: 800; cursor: pointer;" onclick="addTask()">Save to Schedule</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="custom-overlay">
-    <div class="modal">
-      <h2 style="font-family: 'Oswald'; margin-bottom: 20px; font-size: 1.8rem;">Customize Dashboard</h2>
-      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 24px;">Choose which modules appear on your home screen.</p>
-      <div id="customizer-list"></div>
-      <div class="modal-btns">
-        <button style="width: 100%; padding: 16px; border-radius: 16px; background: white; color: black; border: none; font-weight: 800; cursor: pointer;" onclick="closeCustomizer()">Done</button>
-      </div>
-    </div>
-  </div>
-
   <script src="script.js"></script>
 </body>
 </html>
