@@ -60,6 +60,32 @@
               <canvas id="productivity-chart"></canvas>
             </div>
           </section>
+
+          <section class="content-section">
+            <div class="section-header">
+              <h2>Focus Timer</h2>
+            </div>
+            <div id="focus-timer">
+              <div id="focus-time-display">25:00</div>
+              <div id="focus-controls">
+                <button onclick="startFocusTimer()">Start</button>
+                <button class="btn-secondary" onclick="pauseFocusTimer()">Pause</button>
+                <button class="btn-secondary" onclick="resetFocusTimer()">Reset</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="content-section">
+            <div class="section-header">
+              <h2>Today’s 3</h2>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Pick the three tasks that matter most today.</p>
+            </div>
+            <div id="todays-three">
+              <input class="assignment-input" id="today-1" placeholder="Task 1">
+              <input class="assignment-input" id="today-2" placeholder="Task 2">
+              <input class="assignment-input" id="today-3" placeholder="Task 3">
+            </div>
+          </section>
         </div>
 
         <div class="dashboard-right">
