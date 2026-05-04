@@ -8,6 +8,10 @@ let visitsPerDay = JSON.parse(localStorage.getItem(VISITS_KEY)) || {};
 let currentWeekStart = getWeekStart(new Date());
 let calendarAnimating = false;
 
+let focusDuration = 25 * 60;
+let focusRemaining = focusDuration;
+let focusInterval = null;
+
 trackVisit();
 
 function getWeekStart(date) {
@@ -116,15 +120,12 @@ function deleteTask(index) {
 function calculatePriority(dueDate, status) {
   if (!dueDate) return { label: 'Low', class: 'prio-low', score: 0 };
   const today = new Date().toISOString().split('T')[0];
-
   if (status !== 'done' && dueDate < today) {
     return { label: 'Overdue', class: 'prio-overdue', score: 4 };
   }
-
   const todayObj = new Date();
   const dueObj = new Date(dueDate);
   const diffDays = Math.ceil((dueObj - todayObj) / (1000 * 60 * 60 * 24));
-
   if (diffDays <= 3) return { label: 'High', class: 'prio-high', score: 3 };
   if (diffDays <= 7) return { label: 'Med', class: 'prio-med', score: 2 };
   return { label: 'Low', class: 'prio-low', score: 1 };
@@ -135,7 +136,6 @@ function updateStats() {
   const done = masterData.filter(t => t.status === 'done').length;
   const progress = masterData.filter(t => t.status === 'in-progress').length;
   const overdue = masterData.filter(t => t.status !== 'done' && t.date && t.date < today).length;
-
   const totalEl = document.getElementById('stat-total');
   const doneEl = document.getElementById('stat-done');
   const progEl = document.getElementById('stat-progress');
@@ -188,11 +188,9 @@ function renderTasksBoard() {
   };
   if (!lists.todo) return;
   Object.values(lists).forEach(l => l.innerHTML = "");
-
   masterData.forEach(t => {
     let key = t.status === 'in-progress' ? 'progress' : t.status;
     if (t.status !== 'done' && t.date && t.date < today) key = 'overdue';
-
     const card = document.createElement("div");
     card.className = "mini-task-card";
     card.innerHTML = `<span class="tag">${t.class}</span><div><strong>${t.name || '...'}</strong></div><small>${t.date || 'No date'}</small>`;
@@ -206,16 +204,13 @@ function animateWeek(direction, newStart) {
   const gridSecondary = document.getElementById("calendar-grid-secondary");
   const grids = [gridMain, gridSecondary].filter(Boolean);
   if (grids.length === 0) return;
-
   calendarAnimating = true;
   const offset = direction === "next" ? -80 : 80;
-
   grids.forEach(g => {
     g.style.transition = "transform 220ms ease, opacity 220ms ease";
     g.style.transform = `translateX(${offset}px)`;
     g.style.opacity = "0";
   });
-
   setTimeout(() => {
     currentWeekStart = newStart;
     renderCalendar(true);
@@ -257,20 +252,15 @@ function renderCalendar(skipWeekLabel) {
     { grid: gridMain, labelId: "week-range" },
     { grid: gridSecondary, labelId: "week-range-secondary" }
   ];
-
   grids.forEach(({ grid, labelId }) => {
     if (!grid) return;
-
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const weekDates = [];
-
     grid.innerHTML = "";
-
     for (let i = 0; i < 7; i++) {
       const date = new Date(currentWeekStart);
       date.setDate(currentWeekStart.getDate() + i);
       weekDates.push(date);
-
       const header = document.createElement("div");
       header.className = "calendar-header";
       header.innerHTML = `
@@ -279,24 +269,18 @@ function renderCalendar(skipWeekLabel) {
       `;
       grid.appendChild(header);
     }
-
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
     weekDates.forEach(date => {
       const dayCell = document.createElement("div");
       dayCell.className = "calendar-day";
-
       const dateCopy = new Date(date);
       dateCopy.setHours(0, 0, 0, 0);
-
       if (dateCopy.toDateString() === today.toDateString()) {
         dayCell.classList.add("today");
       }
-
       const dateStr = formatDateKey(date);
       const dayTasks = masterData.filter(task => task.date === dateStr);
-
       dayCell.innerHTML = `
         <div class="calendar-day-top">
           <span class="calendar-day-number">${date.getDate()}</span>
@@ -312,10 +296,8 @@ function renderCalendar(skipWeekLabel) {
           `).join('')}
         </div>
       `;
-
       grid.appendChild(dayCell);
     });
-
     if (!skipWeekLabel) {
       const endDate = new Date(currentWeekStart);
       endDate.setDate(endDate.getDate() + 6);
@@ -332,7 +314,6 @@ function getLastNDaysVisits(n) {
   const values = [];
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-
   for (let i = n - 1; i >= 0; i--) {
     const d = new Date(today);
     d.setDate(today.getDate() - i);
@@ -340,7 +321,6 @@ function getLastNDaysVisits(n) {
     labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
     values.push(visitsPerDay[key] || 0);
   }
-
   return { labels, values };
 }
 
@@ -351,13 +331,10 @@ function renderProductivityChart() {
   const rect = canvas.getBoundingClientRect();
   const width = rect.width;
   const height = rect.height;
-
   canvas.width = width * window.devicePixelRatio;
   canvas.height = height * window.devicePixelRatio;
   ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
-
   ctx.clearRect(0, 0, width, height);
-
   const { labels, values } = getLastNDaysVisits(14);
   const maxVal = Math.max(1, ...values);
   const paddingLeft = 30;
@@ -366,7 +343,6 @@ function renderProductivityChart() {
   const paddingBottom = 26;
   const chartWidth = width - paddingLeft - paddingRight;
   const chartHeight = height - paddingTop - paddingBottom;
-
   ctx.strokeStyle = "rgba(148, 163, 184, 0.45)";
   ctx.lineWidth = 1;
   ctx.beginPath();
@@ -374,7 +350,6 @@ function renderProductivityChart() {
   ctx.lineTo(paddingLeft, paddingTop + chartHeight);
   ctx.lineTo(paddingLeft + chartWidth, paddingTop + chartHeight);
   ctx.stroke();
-
   ctx.fillStyle = "rgba(148, 163, 184, 0.9)";
   ctx.font = "10px Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
   ctx.textAlign = "right";
@@ -385,7 +360,6 @@ function renderProductivityChart() {
     const y = paddingTop + chartHeight - (chartHeight * (val / maxVal));
     ctx.fillText(String(val), paddingLeft - 6, y);
   }
-
   ctx.textAlign = "center";
   ctx.textBaseline = "top";
   const stepX = chartWidth / Math.max(1, labels.length - 1);
@@ -394,7 +368,6 @@ function renderProductivityChart() {
     const y = paddingTop + chartHeight + 4;
     ctx.fillText(label, x, y);
   });
-
   ctx.lineWidth = 2;
   ctx.strokeStyle = "rgba(59, 130, 246, 0.9)";
   ctx.beginPath();
@@ -405,11 +378,9 @@ function renderProductivityChart() {
     else ctx.lineTo(x, y);
   });
   ctx.stroke();
-
   const gradient = ctx.createLinearGradient(0, paddingTop, 0, paddingTop + chartHeight);
   gradient.addColorStop(0, "rgba(59, 130, 246, 0.4)");
   gradient.addColorStop(1, "rgba(59, 130, 246, 0)");
-
   ctx.fillStyle = gradient;
   ctx.beginPath();
   values.forEach((val, i) => {
@@ -428,14 +399,12 @@ function renderProjects() {
   const body = document.getElementById("projects-body");
   if (!body) return;
   body.innerHTML = "";
-
   const sorted = [...masterData]
     .map(t => ({ ...t, prio: calculatePriority(t.date, t.status) }))
     .sort((a, b) => {
       if (b.prio.score !== a.prio.score) return b.prio.score - a.prio.score;
       return (a.date || '9999').localeCompare(b.date || '9999');
     });
-
   sorted.forEach((t) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -460,12 +429,48 @@ function setTheme(theme) {
   }
 }
 
+function updateFocusDisplay() {
+  const el = document.getElementById("focus-time-display");
+  if (!el) return;
+  const minutes = Math.floor(focusRemaining / 60).toString().padStart(2, "0");
+  const seconds = (focusRemaining % 60).toString().padStart(2, "0");
+  el.textContent = `${minutes}:${seconds}`;
+}
+
+function startFocusTimer() {
+  if (focusInterval || focusRemaining <= 0) return;
+  focusInterval = setInterval(() => {
+    focusRemaining--;
+    if (focusRemaining <= 0) {
+      focusRemaining = 0;
+      clearInterval(focusInterval);
+      focusInterval = null;
+      alert("Focus session complete!");
+    }
+    updateFocusDisplay();
+  }, 1000);
+}
+
+function pauseFocusTimer() {
+  if (focusInterval) {
+    clearInterval(focusInterval);
+    focusInterval = null;
+  }
+}
+
+function resetFocusTimer() {
+  pauseFocusTimer();
+  focusRemaining = focusDuration;
+  updateFocusDisplay();
+}
+
 window.onload = () => {
   renderAll();
   const hour = new Date().getHours();
   const msg = hour < 12 ? "Good morning!" : hour < 17 ? "Good afternoon!" : "Good evening!";
   const el = document.getElementById('welcomeMessage');
   if (el) el.textContent = msg;
+  updateFocusDisplay();
   window.addEventListener("resize", () => {
     renderProductivityChart();
   });
