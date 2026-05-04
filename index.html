@@ -63,34 +63,6 @@
 
           <section class="content-section">
             <div class="section-header">
-              <h2>Focus Timer</h2>
-            </div>
-            <div id="focus-timer">
-              <div id="focus-time-display">25:00</div>
-              <div id="focus-controls">
-                <button onclick="startFocusTimer()">Start</button>
-                <button class="btn-secondary" onclick="pauseFocusTimer()">Pause</button>
-                <button class="btn-secondary" onclick="resetFocusTimer()">Reset</button>
-              </div>
-            </div>
-          </section>
-
-          <section class="content-section">
-            <div class="section-header">
-              <h2>Today’s 3</h2>
-              <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Pick the three tasks that matter most today.</p>
-            </div>
-            <div id="todays-three">
-              <input class="assignment-input" id="today-1" placeholder="Task 1">
-              <input class="assignment-input" id="today-2" placeholder="Task 2">
-              <input class="assignment-input" id="today-3" placeholder="Task 3">
-            </div>
-          </section>
-        </div>
-
-        <div class="dashboard-right">
-          <section class="content-section">
-            <div class="section-header">
               <h2>Weekly Calendar</h2>
               <div class="controls">
                 <button class="btn-secondary" onclick="prevWeek()">←</button>
@@ -103,6 +75,36 @@
               <div class="calendar-viewport" id="calendar-viewport">
                 <div class="calendar-grid" id="calendar-grid"></div>
               </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="dashboard-right">
+          <section class="content-section">
+            <div class="section-header">
+              <h2>Focus Timer</h2>
+            </div>
+            <div id="focus-timer">
+              <div id="focus-time-display">25:00</div>
+              <div id="focus-controls">
+                <button class="focus-btn-primary" onclick="startFocusTimer()">Start</button>
+                <button class="focus-btn-ghost" onclick="pauseFocusTimer()">Pause</button>
+                <button class="focus-btn-ghost" onclick="resetFocusTimer()">Reset</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="content-section">
+            <div class="section-header">
+              <h2>Today’s 3</h2>
+              <div class="controls">
+                <button class="btn-secondary" onclick="pickTodaysThree()">Shuffle</button>
+              </div>
+            </div>
+            <div id="todays-three">
+              <input class="assignment-input todays-input" id="today-1" placeholder="No tasks yet" readonly>
+              <input class="assignment-input todays-input" id="today-2" placeholder="No tasks yet" readonly>
+              <input class="assignment-input todays-input" id="today-3" placeholder="No tasks yet" readonly>
             </div>
           </section>
         </div>
