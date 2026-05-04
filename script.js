@@ -6,14 +6,13 @@ window.onload = function() {
     document.getElementById('onboarding').style.display = 'none';
     setupApp(userName);
   }
+  renderDashboard();
   renderTasks();
-  if (typeof lucide !== 'undefined') lucide.createIcons();
 };
 
 function initApp() {
-  const name = document.getElementById('user-name-input').value;
-  if (!name) return;
-  userName = name;
+  userName = document.getElementById('user-name-input').value;
+  if (!userName) return;
   localStorage.setItem('deadlinr_user', userName);
   document.getElementById('onboarding').style.display = 'none';
   setupApp(userName);
@@ -26,6 +25,12 @@ function setupApp(name) {
 function navigate(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + pageId).classList.add('active');
+}
+
+function renderDashboard() {
+  document.getElementById('stat-total').textContent = tasks.length;
+  document.getElementById('dashboard-widgets').innerHTML = "<h3>Priority Tasks</h3>" + 
+    tasks.map(t => `<div class="task-item">${t.name}</div>`).join('');
 }
 
 function renderTasks() {
