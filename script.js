@@ -28,7 +28,7 @@ function navigate(pageId) {
 }
 
 function renderTasks() {
-  const list = document.getElementById('all-tasks-list');
+  const list = document.getElementById('page-tasks');
   if(!list) return;
   list.innerHTML = tasks.map(t => `<div class="task-item">${t.name}</div>`).join('');
 }
