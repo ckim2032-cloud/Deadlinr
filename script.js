@@ -1,10 +1,14 @@
 const STORAGE_KEY = "deadlinr_master_data";
 const CLASS_KEY = "deadlinr_classes";
+const VISITS_KEY = "deadlinr_visits_per_day";
 
 let masterData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 let classes = JSON.parse(localStorage.getItem(CLASS_KEY)) || ["General"];
+let visitsPerDay = JSON.parse(localStorage.getItem(VISITS_KEY)) || {};
 let currentWeekStart = getWeekStart(new Date());
 let calendarAnimating = false;
+
+trackVisit();
 
 function getWeekStart(date) {
   const d = new Date(date);
@@ -19,6 +23,13 @@ function formatDateKey(date) {
   const m = String(date.getMonth() + 1).padStart(2, "0");
   const d = String(date.getDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
+}
+
+function trackVisit() {
+  const todayKey = formatDateKey(new Date());
+  const existing = visitsPerDay[todayKey] || 0;
+  visitsPerDay[todayKey] = existing + 1;
+  localStorage.setItem(VISITS_KEY, JSON.stringify(visitsPerDay));
 }
 
 function switchView(viewId) {
@@ -129,6 +140,7 @@ function renderAll() {
   renderTasksBoard();
   renderCalendar();
   renderProjects();
+  renderProductivityChart();
   updateStats();
 }
 
@@ -179,9 +191,8 @@ function renderTasksBoard() {
 
 function animateWeek(direction, newStart) {
   if (calendarAnimating) return;
-  const wrap = document.getElementById("calendar-viewport");
   const grid = document.getElementById("calendar-grid");
-  if (!wrap || !grid) return;
+  if (!grid) return;
 
   calendarAnimating = true;
   const offset = direction === "next" ? -80 : 80;
@@ -192,7 +203,7 @@ function animateWeek(direction, newStart) {
 
   setTimeout(() => {
     currentWeekStart = newStart;
-    renderCalendar(false);
+    renderCalendar(true);
     grid.style.transition = "none";
     grid.style.transform = `translateX(${-offset}px)`;
     grid.style.opacity = "0";
@@ -222,7 +233,7 @@ function todayView() {
   animateWeek("next", newStart);
 }
 
-function renderCalendar(skipWeekLabel = false) {
+function renderCalendar(skipWeekLabel) {
   const grid = document.getElementById("calendar-grid");
   if (!grid) return;
 
@@ -291,6 +302,103 @@ function renderCalendar(skipWeekLabel = false) {
   }
 }
 
+function getLastNDaysVisits(n) {
+  const labels = [];
+  const values = [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  for (let i = n - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const key = formatDateKey(d);
+    labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+    values.push(visitsPerDay[key] || 0);
+  }
+
+  return { labels, values };
+}
+
+function renderProductivityChart() {
+  const canvas = document.getElementById("productivity-chart");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const rect = canvas.getBoundingClientRect();
+  const width = rect.width;
+  const height = rect.height;
+
+  canvas.width = width * window.devicePixelRatio;
+  canvas.height = height * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+  ctx.clearRect(0, 0, width, height);
+
+  const { labels, values } = getLastNDaysVisits(14);
+  const maxVal = Math.max(1, ...values);
+  const paddingLeft = 30;
+  const paddingRight = 10;
+  const paddingTop = 15;
+  const paddingBottom = 26;
+  const chartWidth = width - paddingLeft - paddingRight;
+  const chartHeight = height - paddingTop - paddingBottom;
+
+  ctx.strokeStyle = "rgba(148, 163, 184, 0.4)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(paddingLeft, paddingTop);
+  ctx.lineTo(paddingLeft, paddingTop + chartHeight);
+  ctx.lineTo(paddingLeft + chartWidth, paddingTop + chartHeight);
+  ctx.stroke();
+
+  ctx.fillStyle = "rgba(148, 163, 184, 0.9)";
+  ctx.font = "10px Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+  ctx.textAlign = "right";
+  ctx.textBaseline = "middle";
+  const ticks = 4;
+  for (let i = 0; i <= ticks; i++) {
+    const val = Math.round((maxVal / ticks) * i);
+    const y = paddingTop + chartHeight - (chartHeight * (val / maxVal));
+    ctx.fillText(String(val), paddingLeft - 6, y);
+  }
+
+  ctx.textAlign = "center";
+  ctx.textBaseline = "top";
+  const stepX = chartWidth / Math.max(1, labels.length - 1);
+  labels.forEach((label, i) => {
+    const x = paddingLeft + i * stepX;
+    const y = paddingTop + chartHeight + 4;
+    ctx.fillText(label, x, y);
+  });
+
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = "rgba(59, 130, 246, 0.9)";
+  ctx.beginPath();
+  values.forEach((val, i) => {
+    const x = paddingLeft + i * stepX;
+    const y = paddingTop + chartHeight - (chartHeight * (val / maxVal));
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  const gradient = ctx.createLinearGradient(0, paddingTop, 0, paddingTop + chartHeight);
+  gradient.addColorStop(0, "rgba(59, 130, 246, 0.4)");
+  gradient.addColorStop(1, "rgba(59, 130, 246, 0)");
+
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  values.forEach((val, i) => {
+    const x = paddingLeft + i * stepX;
+    const y = paddingTop + chartHeight - (chartHeight * (val / maxVal));
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.lineTo(paddingLeft + chartWidth, paddingTop + chartHeight);
+  ctx.lineTo(paddingLeft, paddingTop + chartHeight);
+  ctx.closePath();
+  ctx.fill();
+}
+
 function renderProjects() {
   const body = document.getElementById("projects-body");
   if (!body) return;
@@ -332,4 +440,7 @@ window.onload = () => {
   const hour = new Date().getHours();
   const msg = hour < 12 ? "Good morning!" : hour < 17 ? "Good afternoon!" : "Good evening!";
   document.getElementById('welcomeMessage').textContent = msg;
+  window.addEventListener("resize", () => {
+    renderProductivityChart();
+  });
 };
