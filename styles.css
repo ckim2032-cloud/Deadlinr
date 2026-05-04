@@ -9,6 +9,8 @@
   --accent-green: #22c55e;
   --accent-blue: #3b82f6;
   --accent-purple: #a855f7;
+  --accent-amber: #f59e0b;
+  --accent-red: #ef4444;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --border-gradient: linear-gradient(135deg, #3b82f6, #22c55e);
@@ -253,13 +255,73 @@ header {
 }
 
 .stat-card {
-  background: var(--card-bg);
+  background: radial-gradient(circle at 0 0, rgba(148, 163, 184, 0.2), transparent 65%), var(--card-bg);
   backdrop-filter: var(--glass-blur);
   padding: 20px;
   border-radius: 15px;
   position: relative;
   border: 1px solid rgba(148, 163, 184, 0.4);
   box-shadow: 0 12px 40px rgba(15, 23, 42, 0.55);
+  overflow: hidden;
+}
+
+.stat-card.stat-total {
+  border-color: rgba(59, 130, 246, 0.8);
+  background: radial-gradient(circle at 0 0, rgba(59, 130, 246, 0.3), transparent 70%), var(--card-bg);
+}
+
+.stat-card.stat-completed {
+  border-color: rgba(34, 197, 94, 0.9);
+  background: radial-gradient(circle at 100% 0, rgba(34, 197, 94, 0.28), transparent 70%), var(--card-bg);
+}
+
+.stat-card.stat-progress {
+  border-color: rgba(245, 158, 11, 0.9);
+  background: radial-gradient(circle at 0 100%, rgba(245, 158, 11, 0.32), transparent 70%), var(--card-bg);
+}
+
+.stat-card.stat-overdue {
+  border-color: rgba(239, 68, 68, 0.9);
+  background: radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.3), transparent 70%), var(--card-bg);
+}
+
+.stat-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18px;
+  bottom: 18px;
+  width: 3px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(148, 163, 184, 0.2), rgba(148, 163, 184, 0.7));
+}
+
+.stat-card.stat-total::after {
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.8));
+}
+
+.stat-card.stat-completed::after {
+  background: linear-gradient(180deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.85));
+}
+
+.stat-card.stat-progress::after {
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.85));
+}
+
+.stat-card.stat-overdue::after {
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.9));
+}
+
+.stat-card h3 {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0 0 10px 0;
+}
+
+.stat-val {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
 }
 
 .stat-card::before,
@@ -278,18 +340,6 @@ header {
   pointer-events: none;
 }
 
-.stat-card h3 {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  margin: 0 0 10px 0;
-}
-
-.stat-val {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0;
-}
-
 .content-section {
   background: var(--card-bg);
   backdrop-filter: var(--glass-blur);
@@ -299,6 +349,44 @@ header {
   position: relative;
   border: 1px solid rgba(148, 163, 184, 0.4);
   box-shadow: 0 16px 60px rgba(15, 23, 42, 0.75);
+}
+
+.card-tasks {
+  border-image: linear-gradient(135deg, #3b82f6, #22c55e) 1;
+}
+
+.card-productivity::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(129, 140, 248, 0.1));
+  opacity: 0.7;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.card-calendar {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(129, 140, 248, 0.55);
+}
+
+.card-focus {
+  border-color: rgba(34, 197, 94, 0.7);
+  box-shadow: 0 18px 55px rgba(34, 197, 94, 0.35);
+}
+
+.card-today {
+  border-color: rgba(168, 85, 247, 0.7);
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(148, 163, 184, 0.12),
+      rgba(148, 163, 184, 0.12) 1px,
+      transparent 1px,
+      transparent 6px
+    ),
+    var(--card-bg);
 }
 
 .section-header {
