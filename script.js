@@ -86,7 +86,10 @@ function addRow() {
   save();
   renderAll();
 }
-
+function goToTasksAndAdd() {
+  addRow();
+  switchView('tasks');
+}
 function updateTask(index, key, val) {
   if (masterData[index]) {
     masterData[index][key] = val;
