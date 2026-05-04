@@ -35,8 +35,10 @@ function trackVisit() {
 function switchView(viewId) {
   document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-  document.getElementById(`view-${viewId}`).classList.add('active');
-  document.getElementById(`nav-${viewId}`).classList.add('active');
+  const targetView = document.getElementById(`view-${viewId}`);
+  const targetNav = document.getElementById(`nav-${viewId}`);
+  if (targetView) targetView.classList.add('active');
+  if (targetNav) targetNav.classList.add('active');
   renderAll();
 }
 
@@ -86,10 +88,12 @@ function addRow() {
   save();
   renderAll();
 }
+
 function goToTasksAndAdd() {
   addRow();
   switchView('tasks');
 }
+
 function updateTask(index, key, val) {
   if (masterData[index]) {
     masterData[index][key] = val;
@@ -132,10 +136,14 @@ function updateStats() {
   const progress = masterData.filter(t => t.status === 'in-progress').length;
   const overdue = masterData.filter(t => t.status !== 'done' && t.date && t.date < today).length;
 
-  document.getElementById('stat-total').textContent = masterData.length;
-  document.getElementById('stat-done').textContent = done;
-  document.getElementById('stat-progress').textContent = progress;
-  document.getElementById('stat-overdue').textContent = overdue;
+  const totalEl = document.getElementById('stat-total');
+  const doneEl = document.getElementById('stat-done');
+  const progEl = document.getElementById('stat-progress');
+  const overdueEl = document.getElementById('stat-overdue');
+  if (totalEl) totalEl.textContent = masterData.length;
+  if (doneEl) doneEl.textContent = done;
+  if (progEl) progEl.textContent = progress;
+  if (overdueEl) overdueEl.textContent = overdue;
 }
 
 function renderAll() {
@@ -194,15 +202,15 @@ function renderTasksBoard() {
 
 function animateWeek(direction, newStart) {
   if (calendarAnimating) return;
-  const grid = document.getElementById("calendar-grid");
+  const gridMain = document.getElementById("calendar-grid");
   const gridSecondary = document.getElementById("calendar-grid-secondary");
-  if (!grid && !gridSecondary) return;
+  const grids = [gridMain, gridSecondary].filter(Boolean);
+  if (grids.length === 0) return;
 
   calendarAnimating = true;
   const offset = direction === "next" ? -80 : 80;
 
-  [grid, gridSecondary].forEach(g => {
-    if (!g) return;
+  grids.forEach(g => {
     g.style.transition = "transform 220ms ease, opacity 220ms ease";
     g.style.transform = `translateX(${offset}px)`;
     g.style.opacity = "0";
@@ -211,8 +219,7 @@ function animateWeek(direction, newStart) {
   setTimeout(() => {
     currentWeekStart = newStart;
     renderCalendar(true);
-    [grid, gridSecondary].forEach(g => {
-      if (!g) return;
+    grids.forEach(g => {
       g.style.transition = "none";
       g.style.transform = `translateX(${-offset}px)`;
       g.style.opacity = "0";
@@ -246,13 +253,13 @@ function todayView() {
 function renderCalendar(skipWeekLabel) {
   const gridMain = document.getElementById("calendar-grid");
   const gridSecondary = document.getElementById("calendar-grid-secondary");
-  const grids = [gridMain, gridSecondary];
+  const grids = [
+    { grid: gridMain, labelId: "week-range" },
+    { grid: gridSecondary, labelId: "week-range-secondary" }
+  ];
 
-  grids.forEach((grid, idx) => {
+  grids.forEach(({ grid, labelId }) => {
     if (!grid) return;
-
-    const isSecondary = idx === 1;
-    const labelId = isSecondary ? "week-range-secondary" : "week-range";
 
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const weekDates = [];
@@ -360,7 +367,7 @@ function renderProductivityChart() {
   const chartWidth = width - paddingLeft - paddingRight;
   const chartHeight = height - paddingTop - paddingBottom;
 
-  ctx.strokeStyle = "rgba(148, 163, 184, 0.4)";
+  ctx.strokeStyle = "rgba(148, 163, 184, 0.45)";
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(paddingLeft, paddingTop);
@@ -457,7 +464,8 @@ window.onload = () => {
   renderAll();
   const hour = new Date().getHours();
   const msg = hour < 12 ? "Good morning!" : hour < 17 ? "Good afternoon!" : "Good evening!";
-  document.getElementById('welcomeMessage').textContent = msg;
+  const el = document.getElementById('welcomeMessage');
+  if (el) el.textContent = msg;
   window.addEventListener("resize", () => {
     renderProductivityChart();
   });
