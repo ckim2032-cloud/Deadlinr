@@ -11,9 +11,9 @@ window.onload = function() {
 };
 
 function initApp() {
-  const input = document.getElementById('user-name-input');
-  if (!input.value) return;
-  userName = input.value;
+  const name = document.getElementById('user-name-input').value;
+  if (!name) return;
+  userName = name;
   localStorage.setItem('deadlinr_user', userName);
   document.getElementById('onboarding').style.display = 'none';
   setupApp(userName);
@@ -31,5 +31,5 @@ function navigate(pageId) {
 function renderTasks() {
   const list = document.getElementById('all-tasks-list');
   if(!list) return;
-  list.innerHTML = tasks.map(t => `<div class="task-item">${t.name}</div>`).join('');
+  list.innerHTML = tasks.length > 0 ? tasks.map(t => `<div class="task-item">${t.name}</div>`).join('') : "No tasks yet.";
 }
