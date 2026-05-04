@@ -16,13 +16,9 @@
       <button class="onboard-btn" onclick="initApp()">Enter Workspace</button>
     </div>
   </div>
-
   <div id="app-container">
     <nav id="sidebar">
-      <div class="brand">
-        <div class="brand-logo"><i data-lucide="check" size="22" color="white"></i></div>
-        <div class="brand-name">Deadlinr</div>
-      </div>
+      <div class="brand"><div class="brand-logo"><i data-lucide="check" size="22" color="white"></i></div><div class="brand-name">Deadlinr</div></div>
       <button class="btn-new-task" onclick="openModal()">New Task</button>
       <div id="sidebar-nav">
         <div class="nav-item active" onclick="navigate('dashboard')">Dashboard</div>
@@ -33,8 +29,10 @@
     <main id="main-wrapper">
       <header><h2 id="welcome-text">Hey!</h2></header>
       <div id="page-dashboard" class="page active">
-        <section class="stats-grid"></section>
-        <div id="dashboard-widgets"></div>
+        <section class="stats-grid">
+           <div class="stat-card"><h3>Total</h3><p class="stat-val" id="stat-total">0</p></div>
+        </section>
+        <div id="dashboard-widgets" class="content-section"></div>
       </div>
       <div id="page-tasks" class="page">
         <section class="content-section"><div id="all-tasks-list"></div></section>
