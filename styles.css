@@ -166,18 +166,10 @@ body.light-theme::after {
     border-color 0.14s ease,
     background 0.14s ease;
 }
-
 #sidebar-add-task::before {
   content: "+";
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.9);
-  border: 1px solid rgba(148, 163, 184, 0.8);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 #sidebar-add-task:hover {
