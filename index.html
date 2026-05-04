@@ -1,47 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deadlinr | Pro Student Workspace</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deadlinr Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-  <div id="onboarding">
-    <div class="onboard-card">
-      <div class="onboard-logo"><i data-lucide="zap" style="color:#3b82f6"></i> Deadlinr</div>
-      <input type="text" id="user-name-input" class="onboard-input" placeholder="What's your name?">
-      <button class="onboard-btn" onclick="initApp()">Enter Workspace</button>
-    </div>
-  </div>
+<body class="dark-theme">
+    <nav id="sidebar">
+        <div id="logo-container">
+            <img src="logo.png" id="logo-img" alt="Logo">
+            <div id="logo-text">Deadlinr</div>
+        </div>
+        <button id="sidebar-add-task" onclick="toggleTaskModal(true)">Add Task</button>
+        <div class="nav-item active" id="nav-dashboard" onclick="switchView('dashboard')">Dashboard</div>
+        <div class="nav-item" id="nav-tasks" onclick="switchView('tasks')">Tasks</div>
+        <div class="nav-item" id="nav-calendar" onclick="switchView('calendar')">Calendar</div>
+        <div class="nav-item" id="nav-projects" onclick="switchView('projects')">Projects</div>
+        <div class="nav-item" id="nav-settings" onclick="switchView('settings')">Settings</div>
+    </nav>
 
-  <div id="app-container">
-    <aside id="sidebar">
-      <div class="brand"><div class="brand-logo"><i data-lucide="check" size="22" color="white"></i></div><div class="brand-name">Deadlinr</div></div>
-      <button class="btn-new-task" onclick="openModal()"><i data-lucide="plus-circle" size="20"></i> New Task</button>
-      <nav id="sidebar-nav">
-        <div class="nav-link active" onclick="navigate('dashboard')"><i data-lucide="layout-grid" size="20"></i> Dashboard</div>
-        <div class="nav-link" onclick="navigate('tasks')"><i data-lucide="layers" size="20"></i> Focus List</div>
-        <div class="nav-link" onclick="navigate('timer')"><i data-lucide="timer" size="20"></i> Focus Timer</div>
-        <div class="nav-link" onclick="navigate('calendar')"><i data-lucide="calendar-days" size="20"></i> Timeline</div>
-        <div class="nav-link" onclick="navigate('stats')"><i data-lucide="trending-up" size="20"></i> Analytics</div>
-        <div class="nav-link" onclick="navigate('settings')"><i data-lucide="sliders" size="20"></i> Settings</div>
-      </nav>
-    </aside>
+    <main class="main-page">
+        <header>
+            <div id="welcome-container">
+                <h1 id="welcomeMessage">Good morning!</h1>
+                <p id="view-subtitle">Overview of your academic progress.</p>
+            </div>
+        </header>
 
-    <main id="main-wrapper">
-      <header>
-        <div><h2 id="welcome-text" style="font-family: 'Oswald';">Hey!</h2><p id="date-subtitle"></p></div>
-        <div class="search-container"><i data-lucide="search" size="18"></i><input type="text" placeholder="Search..." oninput="handleSearch(this.value)"></div>
-      </header>
-      <div id="page-dashboard" class="page active"><div class="stat-grid" id="stat-grid"></div><div id="dashboard-widgets"></div></div>
-      <div id="page-tasks" class="page"><div class="content-box"><div id="all-tasks-list"></div></div></div>
-      <div id="page-timer" class="page"><div class="content-box"><div id="timer-display">25:00</div></div></div>
-      <div id="page-calendar" class="page"><div class="content-box"><div id="calendar-grid"></div></div></div>
+        <div id="view-dashboard" class="view-section active">
+            <section class="stats-grid">
+                <div class="stat-card stat-total"><h3>Total Tasks</h3><p class="stat-val" id="stat-total">0</p></div>
+                <div class="stat-card stat-completed"><h3>Completed</h3><p class="stat-val" id="stat-done">0</p></div>
+                <div class="stat-card stat-progress"><h3>In Progress</h3><p class="stat-val" id="stat-progress">0</p></div>
+                <div class="stat-card stat-overdue"><h3>Overdue</h3><p class="stat-val" id="stat-overdue">0</p></div>
+            </section>
+
+            <section class="dashboard-grid">
+                <div class="dashboard-left">
+                    <section class="content-section card-tasks" id="card-tasks">
+                        <div class="section-header">
+                            <h2>Tasks</h2>
+                            <div class="controls"><button onclick="goToTasksAndAdd()">Add Task</button></div>
+                        </div>
+                    </section>
+                    <section class="content-section card-productivity" id="card-productivity">
+                        <div class="section-header">
+                            <h2>Productivity Trend</h2>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Visits per day (last 14 days)</p>
+                        </div>
+                        <div class="chart-wrapper"><canvas id="productivity-chart"></canvas></div>
+                    </section>
+                    <section class="content-section card-calendar" id="card-calendar">
+                        <div class="section-header">
+                            <h2>Weekly Calendar</h2>
+                            <div class="controls">
+                                <button class="btn-secondary" onclick="prevWeek()">←</button>
+                                <span id="week-range" style="color: var(--text-muted); font-weight: 500;"></span>
+                                <button class="btn-secondary" onclick="nextWeek()">→</button>
+                                <button class="btn-secondary" onclick="todayView()">Today</button>
+                            </div>
+                        </div>
+                        <div class="calendar-container">
+                            <div class="calendar-viewport" id="calendar-viewport">
+                                <div class="calendar-grid" id="calendar-grid"></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="dashboard-right">
+                    <section class="content-section card-focus" id="card-focus">
+                        <div class="section-header"><h2>Focus Timer</h2></div>
+                        <div id="focus-timer">
+                            <div id="focus-time-display">25:00</div>
+                            <div id="focus-controls">
+                                <button class="focus-btn-primary" onclick="startFocusTimer()">Start</button>
+                                <button class="focus-btn-ghost" onclick="pauseFocusTimer()">Pause</button>
+                                <button class="focus-btn-ghost" onclick="resetFocusTimer()">Reset</button>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="content-section card-today" id="card-today">
+                        <div class="section-header">
+                            <h2>Today’s 3</h2>
+                            <div class="controls"><button class="btn-secondary" onclick="pickTodaysThree()">Shuffle</button></div>
+                        </div>
+                        <div id="todays-three">
+                            <input class="assignment-input todays-input" id="today-1" readonly>
+                            <input class="assignment-input todays-input" id="today-2" readonly>
+                            <input class="assignment-input todays-input" id="today-3" readonly>
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </div>
+
+        <div id="view-tasks" class="view-section">
+            <section class="content-section">
+                <div class="section-header">
+                    <h2>Task Table</h2>
+                    <div class="controls"><button onclick="addRow()">Add Task</button></div>
+                </div>
+                <table class="deadlinr-table" id="main-table">
+                    <thead><tr><th>Assignment</th><th>Class</th><th>Status</th><th>Due Date</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </section>
+            <section class="content-section">
+                <div class="section-header"><h2>Task Board</h2></div>
+                <div class="tasks-board">
+                    <div class="task-col" id="col-todo"><h4>To Do</h4><div class="task-list"></div></div>
+                    <div class="task-col" id="col-progress"><h4>In Progress</h4><div class="task-list"></div></div>
+                    <div class="task-col" id="col-done"><h4>Completed</h4><div class="task-list"></div></div>
+                    <div class="task-col" id="col-overdue"><h4>Overdue</h4><div class="task-list"></div></div>
+                </div>
+            </section>
+        </div>
+
+        <div id="view-calendar" class="view-section">
+            <section class="content-section" style="min-height: 600px;">
+                <div class="section-header">
+                    <h2>Weekly Calendar</h2>
+                    <div class="controls">
+                        <button class="btn-secondary" onclick="prevWeek()">←</button>
+                        <span id="week-range-secondary" style="color: var(--text-muted); font-weight: 500;"></span>
+                        <button class="btn-secondary" onclick="nextWeek()">→</button>
+                        <button class="btn-secondary" onclick="todayView()">Today</button>
+                    </div>
+                </div>
+                <div class="calendar-container">
+                    <div class="calendar-viewport" id="calendar-viewport-secondary">
+                        <div class="calendar-grid" id="calendar-grid-secondary"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="view-projects" class="view-section">
+            <section class="content-section">
+                <div class="section-header">
+                    <h2>Project Priority Dashboard</h2>
+                    <div class="controls">
+                        <button onclick="addClassFromPrompt()">New Class</button>
+                    </div>
+                </div>
+                <table class="deadlinr-table" id="projects-table">
+                    <thead><tr><th>Priority</th><th>Assignment</th><th>Class</th><th>Due Date</th></tr></thead>
+                    <tbody id="projects-body"></tbody>
+                </table>
+            </section>
+        </div>
+
+        <div id="view-settings" class="view-section">
+            <section class="content-section">
+                <h2>Dashboard Configuration</h2>
+                <div id="dashboard-settings-list" class="controls" style="flex-direction: column;">
+                    <label><input type="checkbox" onchange="toggleDashboardCard('card-tasks')" checked> Show Tasks</label>
+                    <label><input type="checkbox" onchange="toggleDashboardCard('card-productivity')" checked> Show Productivity Trend</label>
+                    <label><input type="checkbox" onchange="toggleDashboardCard('card-calendar')" checked> Show Calendar</label>
+                    <label><input type="checkbox" onchange="toggleDashboardCard('card-focus')" checked> Show Focus Timer</label>
+                    <label><input type="checkbox" onchange="toggleDashboardCard('card-today')" checked> Show Today's 3</label>
+                </div>
+                <hr style="border: 0; border-top: 1px solid #ccc; margin: 30px 0;">
+                <h2>Manage Data</h2>
+                <div class="controls">
+                    <button class="btn-secondary" onclick="addClassFromPrompt()">Add New Class</button>
+                    <button class="danger-btn" onclick="deleteClassFromPrompt()">Delete A Class</button>
+                </div>
+            </section>
+        </div>
     </main>
-  </div>
-  <script src="script.js"></script>
+
+    <div id="task-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <h2>New Task</h2>
+            <input type="text" id="modal-task-name" placeholder="Task Name">
+            <input type="date" id="modal-task-date">
+            <select id="modal-task-class"></select>
+            <button onclick="saveModalTask()">Save Task</button>
+            <button onclick="toggleTaskModal(false)">Cancel</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
