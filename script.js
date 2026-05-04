@@ -108,6 +108,9 @@ function updateTask(index, key, val) {
       renderTasksBoard();
       updateStats();
     }
+    if (key === 'name' || key === 'date' || key === 'status') {
+      pickTodaysThree();
+    }
   }
 }
 
@@ -115,6 +118,7 @@ function deleteTask(index) {
   masterData.splice(index, 1);
   save();
   renderAll();
+  pickTodaysThree();
 }
 
 function calculatePriority(dueDate, status) {
@@ -153,6 +157,7 @@ function renderAll() {
   renderProjects();
   renderProductivityChart();
   updateStats();
+  pickTodaysThree();
 }
 
 function renderMainTable() {
@@ -462,6 +467,41 @@ function resetFocusTimer() {
   pauseFocusTimer();
   focusRemaining = focusDuration;
   updateFocusDisplay();
+}
+
+function pickTodaysThree() {
+  const inputs = [
+    document.getElementById("today-1"),
+    document.getElementById("today-2"),
+    document.getElementById("today-3")
+  ];
+  if (!inputs[0]) return;
+  inputs.forEach(i => i.value = "");
+  const candidates = masterData.filter(t => t.status !== "done" && t.name && t.name.trim());
+  if (candidates.length === 0) {
+    inputs.forEach(i => i.placeholder = "No tasks yet");
+    return;
+  }
+  const shuffled = [...candidates];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = shuffled[i];
+    shuffled[i] = shuffled[j];
+    shuffled[j] = tmp;
+  }
+  const picks = shuffled.slice(0, 3);
+  picks.forEach((t, idx) => {
+    if (inputs[idx]) {
+      inputs[idx].value = t.name;
+      inputs[idx].placeholder = "";
+    }
+  });
+  for (let i = picks.length; i < 3; i++) {
+    if (inputs[i]) {
+      inputs[i].value = "";
+      inputs[i].placeholder = "No more tasks";
+    }
+  }
 }
 
 window.onload = () => {
