@@ -31,15 +31,15 @@
 
     <div id="view-dashboard" class="view-section active">
       <section class="stats-grid">
-        <div class="stat-card"><h3>Total Tasks</h3><p class="stat-val" id="stat-total">0</p></div>
-        <div class="stat-card"><h3>Completed</h3><p class="stat-val" id="stat-done">0</p></div>
-        <div class="stat-card"><h3>In Progress</h3><p class="stat-val" id="stat-progress">0</p></div>
-        <div class="stat-card"><h3>Overdue</h3><p class="stat-val" id="stat-overdue">0</p></div>
+        <div class="stat-card stat-total"><h3>Total Tasks</h3><p class="stat-val" id="stat-total">0</p></div>
+        <div class="stat-card stat-completed"><h3>Completed</h3><p class="stat-val" id="stat-done">0</p></div>
+        <div class="stat-card stat-progress"><h3>In Progress</h3><p class="stat-val" id="stat-progress">0</p></div>
+        <div class="stat-card stat-overdue"><h3>Overdue</h3><p class="stat-val" id="stat-overdue">0</p></div>
       </section>
 
       <section class="dashboard-grid">
         <div class="dashboard-left">
-          <section class="content-section">
+          <section class="content-section card-tasks">
             <div class="section-header">
               <h2>Tasks</h2>
               <div class="controls">
@@ -51,7 +51,7 @@
             </p>
           </section>
 
-          <section class="content-section">
+          <section class="content-section card-productivity">
             <div class="section-header">
               <h2>Productivity Trend</h2>
               <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Visits per day (last 14 days)</p>
@@ -61,7 +61,7 @@
             </div>
           </section>
 
-          <section class="content-section">
+          <section class="content-section card-calendar">
             <div class="section-header">
               <h2>Weekly Calendar</h2>
               <div class="controls">
@@ -80,7 +80,7 @@
         </div>
 
         <div class="dashboard-right">
-          <section class="content-section">
+          <section class="content-section card-focus">
             <div class="section-header">
               <h2>Focus Timer</h2>
             </div>
@@ -94,7 +94,7 @@
             </div>
           </section>
 
-          <section class="content-section">
+          <section class="content-section card-today">
             <div class="section-header">
               <h2>Today’s 3</h2>
               <div class="controls">
