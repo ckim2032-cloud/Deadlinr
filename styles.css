@@ -515,6 +515,35 @@ header {
   gap: 20px;
 }
 
+#focus-timer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+
+#focus-time-display {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+#focus-controls {
+  display: flex;
+  gap: 10px;
+}
+
+#focus-controls button {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+}
+
+#todays-three {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .calendar-container {
   overflow: hidden;
 }
