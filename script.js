@@ -192,25 +192,32 @@ function renderTasksBoard() {
 function animateWeek(direction, newStart) {
   if (calendarAnimating) return;
   const grid = document.getElementById("calendar-grid");
-  if (!grid) return;
+  const gridSecondary = document.getElementById("calendar-grid-secondary");
+  if (!grid && !gridSecondary) return;
 
   calendarAnimating = true;
   const offset = direction === "next" ? -80 : 80;
 
-  grid.style.transition = "transform 220ms ease, opacity 220ms ease";
-  grid.style.transform = `translateX(${offset}px)`;
-  grid.style.opacity = "0";
+  [grid, gridSecondary].forEach(g => {
+    if (!g) return;
+    g.style.transition = "transform 220ms ease, opacity 220ms ease";
+    g.style.transform = `translateX(${offset}px)`;
+    g.style.opacity = "0";
+  });
 
   setTimeout(() => {
     currentWeekStart = newStart;
     renderCalendar(true);
-    grid.style.transition = "none";
-    grid.style.transform = `translateX(${-offset}px)`;
-    grid.style.opacity = "0";
-    requestAnimationFrame(() => {
-      grid.style.transition = "transform 220ms ease, opacity 220ms ease";
-      grid.style.transform = "translateX(0)";
-      grid.style.opacity = "1";
+    [grid, gridSecondary].forEach(g => {
+      if (!g) return;
+      g.style.transition = "none";
+      g.style.transform = `translateX(${-offset}px)`;
+      g.style.opacity = "0";
+      requestAnimationFrame(() => {
+        g.style.transition = "transform 220ms ease, opacity 220ms ease";
+        g.style.transform = "translateX(0)";
+        g.style.opacity = "1";
+      });
     });
     setTimeout(() => {
       calendarAnimating = false;
@@ -234,72 +241,80 @@ function todayView() {
 }
 
 function renderCalendar(skipWeekLabel) {
-  const grid = document.getElementById("calendar-grid");
-  if (!grid) return;
+  const gridMain = document.getElementById("calendar-grid");
+  const gridSecondary = document.getElementById("calendar-grid-secondary");
+  const grids = [gridMain, gridSecondary];
 
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const weekDates = [];
+  grids.forEach((grid, idx) => {
+    if (!grid) return;
 
-  grid.innerHTML = "";
+    const isSecondary = idx === 1;
+    const labelId = isSecondary ? "week-range-secondary" : "week-range";
 
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(currentWeekStart);
-    date.setDate(currentWeekStart.getDate() + i);
-    weekDates.push(date);
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const weekDates = [];
 
-    const header = document.createElement("div");
-    header.className = "calendar-header";
-    header.innerHTML = `
-      <div class="calendar-header-day">${days[i]}</div>
-      <div class="calendar-header-date">${date.getDate()}</div>
-    `;
-    grid.appendChild(header);
-  }
+    grid.innerHTML = "";
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(currentWeekStart);
+      date.setDate(currentWeekStart.getDate() + i);
+      weekDates.push(date);
 
-  weekDates.forEach(date => {
-    const dayCell = document.createElement("div");
-    dayCell.className = "calendar-day";
-
-    const dateCopy = new Date(date);
-    dateCopy.setHours(0, 0, 0, 0);
-
-    if (dateCopy.toDateString() === today.toDateString()) {
-      dayCell.classList.add("today");
+      const header = document.createElement("div");
+      header.className = "calendar-header";
+      header.innerHTML = `
+        <div class="calendar-header-day">${days[i]}</div>
+        <div class="calendar-header-date">${date.getDate()}</div>
+      `;
+      grid.appendChild(header);
     }
 
-    const dateStr = formatDateKey(date);
-    const dayTasks = masterData.filter(task => task.date === dateStr);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    dayCell.innerHTML = `
-      <div class="calendar-day-top">
-        <span class="calendar-day-number">${date.getDate()}</span>
-        <span class="calendar-day-month">${date.toLocaleDateString('en-US', { month: 'short' })}</span>
-      </div>
-      <div class="calendar-day-events">
-        ${dayTasks.map(task => `
-          <div class="calendar-task-widget status-${task.status}">
-            <div class="calendar-task-name">${task.name || 'Untitled'}</div>
-            <div class="calendar-task-class">${task.class || 'General'}</div>
-            <div class="calendar-task-status">${task.status.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase())}</div>
-          </div>
-        `).join('')}
-      </div>
-    `;
+    weekDates.forEach(date => {
+      const dayCell = document.createElement("div");
+      dayCell.className = "calendar-day";
 
-    grid.appendChild(dayCell);
+      const dateCopy = new Date(date);
+      dateCopy.setHours(0, 0, 0, 0);
+
+      if (dateCopy.toDateString() === today.toDateString()) {
+        dayCell.classList.add("today");
+      }
+
+      const dateStr = formatDateKey(date);
+      const dayTasks = masterData.filter(task => task.date === dateStr);
+
+      dayCell.innerHTML = `
+        <div class="calendar-day-top">
+          <span class="calendar-day-number">${date.getDate()}</span>
+          <span class="calendar-day-month">${date.toLocaleDateString('en-US', { month: 'short' })}</span>
+        </div>
+        <div class="calendar-day-events">
+          ${dayTasks.map(task => `
+            <div class="calendar-task-widget status-${task.status}">
+              <div class="calendar-task-name">${task.name || 'Untitled'}</div>
+              <div class="calendar-task-class">${task.class || 'General'}</div>
+              <div class="calendar-task-status">${task.status.replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase())}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      grid.appendChild(dayCell);
+    });
+
+    if (!skipWeekLabel) {
+      const endDate = new Date(currentWeekStart);
+      endDate.setDate(endDate.getDate() + 6);
+      const label = document.getElementById(labelId);
+      if (label) {
+        label.textContent = `${currentWeekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+      }
+    }
   });
-
-  if (!skipWeekLabel) {
-    const endDate = new Date(currentWeekStart);
-    endDate.setDate(endDate.getDate() + 6);
-    const label = document.getElementById("week-range");
-    if (label) {
-      label.textContent = `${currentWeekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-    }
-  }
 }
 
 function getLastNDaysVisits(n) {
@@ -329,7 +344,7 @@ function renderProductivityChart() {
 
   canvas.width = width * window.devicePixelRatio;
   canvas.height = height * window.devicePixelRatio;
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
 
   ctx.clearRect(0, 0, width, height);
 
